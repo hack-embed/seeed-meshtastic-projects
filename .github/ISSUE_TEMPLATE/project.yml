@@ -1,0 +1,48 @@
+name: 分享 Meshtastic 项目
+description: 推荐一个基于 Seeed 硬件的 Meshtastic 项目
+title: "[项目投稿] "
+body:
+  - type: input
+    id: name
+    attributes:
+      label: 项目名称
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: 原作者
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 项目介绍
+      description: 它解决什么问题？有什么特色？
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: 使用的 Seeed 设备
+      placeholder: Wio Tracker L1 / XIAO ESP32S3 + Wio-SX1262 / T1000-E
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: 项目链接
+      description: 公开源码、设计文件或制作教程的 HTTPS 链接
+    validations:
+      required: true
+  - type: input
+    id: image
+    attributes:
+      label: 封面图片链接（可选）
+  - type: checkboxes
+    id: attribution
+    attributes:
+      label: 署名与授权
+      options:
+        - label: 已注明原作者，且有权分享提交的内容和图片。
+          required: true
