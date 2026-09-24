@@ -55,3 +55,35 @@ test('desktop and mobile pages remain English and fit the viewport',async({page}
   }
   expect(errors).toEqual([]);
 });
+
+test('Hub sections and submission form stay inline, with anchors and draft preservation', async ({page}) => {
+  await page.goto('/');
+  await expect(page.locator('.project-card')).toHaveCount(15);
+  await expect(page.locator('#project-form')).toBeVisible();
+  const ids = ['home', 'projects', 'activities', 'submit', 'contact'];
+  for (const id of ids) await expect(page.locator(`#${id}`)).toBeVisible();
+  const positions = await page.evaluate(ids => ids.map(id => document.getElementById(id).getBoundingClientRect().top), ids);
+  expect(positions).toEqual([...positions].sort((a,b) => a-b));
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('.campaign-banner')).toHaveCount(1);
+  await page.locator('#main-nav a[href="#submit"]').click();
+  await expect.poll(() => page.locator('#submit').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBeGreaterThanOrEqual(70);
+  await expect.poll(() => page.locator('#submit').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBeLessThan(150);
+  await page.locator('[name=title]').fill('Keep this inline draft');
+  await page.locator('#main-nav a[href="#projects"]').click();
+  await page.locator('#main-nav a[href="#submit"]').click();
+  await expect(page.locator('[name=title]')).toHaveValue('Keep this inline draft');
+  await expect(page.locator('#activities')).toBeVisible();
+
+  // A direct form link must land correctly even when the catalog above it arrives late.
+  await page.route('**/data/projects.json', async route => {
+    const response = await route.fetch();
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await route.fulfill({response});
+  });
+  await page.goto('/?activity=l2-pro#submit');
+  await expect(page.locator('.project-card')).toHaveCount(15);
+  await expect(page.locator('#related-activity')).toHaveValue('l2-pro');
+  await expect.poll(() => page.locator('#submit').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBeGreaterThanOrEqual(70);
+  await expect.poll(() => page.locator('#submit').evaluate(el => Math.round(el.getBoundingClientRect().top))).toBeLessThan(150);
+});

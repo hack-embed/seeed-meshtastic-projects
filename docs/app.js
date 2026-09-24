@@ -93,18 +93,32 @@ function closeDetailRoute() {
   activeProject = null;
   const url = new URL(location.href); url.searchParams.delete('project'); history.replaceState(null, '', url);
 }
-function route(scroll = true) {
-  const page = ['home','projects','activities','submit','contact'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
-  document.querySelectorAll('[data-page]').forEach(section => { section.hidden = section.dataset.page !== page; });
-  document.querySelectorAll('#main-nav a').forEach(a => { if (a.hash === `#${page}`) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
-  $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false');
-  const names = { home:'Your next Mesh project starts here.', projects:'Projects', activities:'Community Activities', submit:'Submit a Project', contact:'Contact Us' };
-  document.title = `Mesh Lab · ${names[page]}`;
-  const requested = new URLSearchParams(location.search).get('project');
-  if (page === 'projects' && requested && projects.some(p => p.id === requested)) showDetail(requested);
-  else if ($('detail').open) $('detail').close();
-  if (scroll) window.scrollTo({top:0, behavior:'instant'});
+const sectionIds = ['home', 'projects', 'activities', 'submit', 'contact'];
+function markCurrentSection(id) {
+  document.querySelectorAll('#main-nav a').forEach(a => {
+    if (a.hash === `#${id}`) a.setAttribute('aria-current', 'location');
+    else a.removeAttribute('aria-current');
+  });
 }
+function route(scroll = true) {
+  const section = sectionIds.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+  markCurrentSection(section);
+  $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false');
+  const requested = new URLSearchParams(location.search).get('project');
+  if (section === 'projects' && requested && projects.some(p => p.id === requested)) showDetail(requested);
+  else if ($('detail').open) $('detail').close();
+  if (scroll && !$('detail').open) $(section).scrollIntoView({block: 'start'});
+}
+let scrollFrame = null;
+window.addEventListener('scroll', () => {
+  if (scrollFrame !== null) return;
+  scrollFrame = requestAnimationFrame(() => {
+    const threshold = document.querySelector('.site-header').getBoundingClientRect().bottom + 48;
+    const current = sectionIds.filter(id => $(id).getBoundingClientRect().top <= threshold).at(-1) || 'home';
+    markCurrentSection(current);
+    scrollFrame = null;
+  });
+}, {passive: true});
 async function loadProjects() {
   $('load-error').hidden = true; $('result-count').textContent = 'Loading projects…';
   try {
@@ -112,7 +126,7 @@ async function loadProjects() {
     projects = await response.json(); if (!Array.isArray(projects)) throw new Error('Invalid catalog');
     $('catalog-stats').textContent = `${projects.length} PROJECTS / A WORLD OF POSSIBILITIES`;
     render(); route(false);
-    try { const r = await fetch('./data/engagement.json'); if (r.ok) { engagement = (await r.json()).projects || {}; render(); if (activeProject && $('detail').open) showDetail(activeProject); } } catch { /* The catalog works without engagement snapshots. */ }
+    void (async () => { try { const r = await fetch('./data/engagement.json'); if (r.ok) { engagement = (await r.json()).projects || {}; render(); if (activeProject && $('detail').open) showDetail(activeProject); } } catch { /* The catalog works without engagement snapshots. */ } })();
   } catch {
     $('load-error').hidden = false; $('empty').hidden = true; $('result-count').textContent = 'Projects are unavailable';
   }
@@ -159,5 +173,18 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && $('main-nav').classList.contains('is-open')) { $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false'); $('menu-toggle').focus(); }
   if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
 });
-mountProjectForm({activity: params.get('activity') || ''});
-route(false); render(); loadProjects();
+// Restore a direct section link after the asynchronous content sets its final position.
+// Once the visitor starts interacting, leave scrolling under their control.
+const initialHash = location.hash;
+let visitorInteracted = false;
+const initialNavigation = new AbortController();
+for (const event of ['pointerdown', 'wheel', 'touchstart', 'keydown']) {
+  window.addEventListener(event, () => { visitorInteracted = true; }, {passive: true, signal: initialNavigation.signal});
+}
+route(false); render();
+Promise.all([mountProjectForm({activity: params.get('activity') || ''}), loadProjects()]).then(() => {
+  if (!visitorInteracted && location.hash === initialHash && sectionIds.includes(initialHash.slice(1)) && !$('detail').open) {
+    $(initialHash.slice(1)).scrollIntoView({block: 'start', behavior: 'instant'});
+  }
+  initialNavigation.abort();
+});

@@ -34,7 +34,7 @@ test('L2 responsive layout and reduced motion',async({page})=>{
  }
 });
 test('Hub links to activity and repository import keeps user edits',async({page})=>{
- await page.goto('/#projects');await expect(page.locator('#projects .campaign-banner')).toHaveAttribute('href','./l2.html');
+ await page.goto('/#projects');await expect(page.locator('#home .campaign-banner')).toHaveAttribute('href','./l2.html');
  await page.goto('/?activity=l2-pro#submit');await expect(page.locator('#related-activity')).toHaveValue('l2-pro');
  await page.route('https://api.github.com/repos/example/build',route=>route.fulfill({json:{name:'Repo build',description:'A useful imported project description for L2 Pro.',license:{spdx_id:'MIT'}}}));
  await page.locator('[name=title]').fill('My edited title');await page.locator('#repository-url').fill('https://github.com/example/build');await page.locator('#import-repo').click();
