@@ -1,3 +1,4 @@
+import { mountProjectForm } from './project-form.js';
 import { CATEGORIES, PRODUCTS, ACTIVITIES, REPO_URL } from './config.js';
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,7 +12,7 @@ const dateLabel = (date) => new Intl.DateTimeFormat('en', { month: 'short', day:
 const params = new URLSearchParams(location.search);
 let projects = [], engagement = {}, activeProject = null;
 let category = CATEGORIES.includes(params.get('category')) ? params.get('category') : 'all';
-let submissionBody = '';
+
 function readStorage(key, initial) {
   try { return JSON.parse(localStorage.getItem(key)) ?? initial; } catch { return initial; }
 }
@@ -75,7 +76,7 @@ function discussionUrl(p) {
 function detailHtml(p) {
   const s = stats(p);
   const activity = ACTIVITIES.find(a => a.id === p.activity);
-  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}<h3>Resources &amp; Links</h3><ul class="detail-resources">${p.resources.map(r => `<li>${link(r.url,r.label)}</li>`).join('')}</ul><h3>Related Activity</h3><p>${activity ? (activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'Independent community project'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><p class="engagement-note">Likes and shares you add here are saved in this browser. Comments open on GitHub and require sign-in. Published GitHub heart and comment counts update periodically.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
+  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}<h3>Resources &amp; Links</h3><ul class="detail-resources">${p.resources.map(r => `<li>${link(r.url,r.label)}</li>`).join('')}</ul><h3>Related Activity</h3><p>${activity ? (activity.id === 'l2-pro' ? `<a class="text-link" href="./l2.html">${escapeHtml(activity.title)} →</a>` : activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'Independent community project'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><p class="engagement-note">Likes and shares you add here are saved in this browser. Comments open on GitHub and require sign-in. Published GitHub heart and comment counts update periodically.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
 }
 function showDetail(id) {
   const p = projects.find(item => item.id === id); if (!p) return;
@@ -158,38 +159,5 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && $('main-nav').classList.contains('is-open')) { $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false'); $('menu-toggle').focus(); }
   if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
 });
-function checkboxes(values, name) { return values.map(v => `<label class="check-option"><input type="checkbox" name="${name}" value="${escapeHtml(v)}"><span>${escapeHtml(v)}</span></label>`).join(''); }
-$('hardware-options').innerHTML = checkboxes(PRODUCTS,'hardware');
-$('category-options').innerHTML = checkboxes(CATEGORIES,'categories');
-$('related-activity').innerHTML += ACTIVITIES.map(a => `<option value="${a.id}">${escapeHtml(a.title)}</option>`).join('');
-$('related-activity').addEventListener('change', () => { $('social-field').hidden = $('related-activity').value !== 'l2-pro'; });
-$('project-form').addEventListener('input', () => { $('submission-ready').hidden = true; $('form-error').hidden = true; });
-function formError(message) { $('form-error').textContent = message; $('form-error').hidden = false; $('form-error').scrollIntoView({block:'center'}); }
-function submissionSection(label, text) { return `### ${label}\n\n${text || '_No response_'}\n\n`; }
-$('project-form').addEventListener('submit', event => {
-  event.preventDefault(); const form = new FormData(event.currentTarget);
-  if (!form.getAll('hardware').length || !form.getAll('categories').length) return formError('Select at least one product and one category.');
-  if (!safeUrl(form.get('image'))) return formError('Use a public HTTPS link for the cover image.');
-  const resources = String(form.get('resources')).split(/\n/).map(s => s.trim()).filter(Boolean);
-  const social = form.get('activity') === 'l2-pro' ? String(form.get('social')).split(/\n/).map(s => s.trim()).filter(Boolean) : [];
-  if (!resources.length || !resources.every(safeUrl) || !social.every(safeUrl)) return formError('Add one valid HTTPS URL per line in Resources & Links and Social Links.');
-  const values = {
-    'Project Title':String(form.get('title')).trim(), 'Author / Maker':String(form.get('author')).trim(),
-    'Project Description':String(form.get('description')).trim(), 'Project Cover Image':String(form.get('image')).trim(),
-    'Hardware':form.getAll('hardware').join(', '), 'Category':form.getAll('categories').join(', '),
-    'Setup Instructions':String(form.get('setup')).trim(), 'Resources & Links':resources.join('\n'),
-    'Related Activity':ACTIVITIES.find(a => a.id === form.get('activity'))?.title || 'No related activity',
-    'Social Links':social.join('\n'), 'Attribution':'- [x] I have credited the original maker and have permission to share this content and its images.',
-  };
-  if (!values['Project Title'] || !values['Author / Maker'] || values['Project Description'].length < 30) return formError('Add a project title, maker, and a description of at least 30 characters.');
-  if (Object.values(values).some(v => /^### /m.test(v))) return formError('Use plain text or headings with two # characters in your submission. Three-# headings are reserved for form fields.');
-  submissionBody = Object.entries(values).map(([label,value]) => submissionSection(label,value)).join('');
-  const url = new URL(`${REPO_URL}/issues/new`); url.searchParams.set('title',`[Project] ${values['Project Title']}`); url.searchParams.set('body',submissionBody);
-  $('github-submit').href = url.href.length < 7500 ? url.href : `${REPO_URL}/issues/new?title=${encodeURIComponent(`[Project] ${values['Project Title']}`)}`;
-  $('submission-help').textContent = url.href.length < 7500 ? 'Sign in to GitHub, review the details, then select Create. Your project goes live only after AE approval.' : 'This submission is too long to prefill safely. Copy the submission below, open GitHub, and paste it into the issue body before selecting Create.';
-  $('private-email').hidden = !String(form.get('email')).trim();
-  if (!$('private-email').hidden) $('private-email').href = `mailto:sensecap@seeed.cc?subject=${encodeURIComponent(`Mesh Lab reward contact: ${values['Project Title']}`)}&body=${encodeURIComponent(`Project: ${values['Project Title']}\nGitHub submission URL: [paste your issue URL here]\nReward contact email: ${form.get('email')}\nRelated activity: ${values['Related Activity']}\n\nPlease use this address for community activity reward follow-up.`)}`;
-  $('submission-ready').hidden = false; $('form-error').hidden = true; $('submission-ready').scrollIntoView({block:'center',behavior:'smooth'}); $('github-submit').focus({preventScroll:true});
-});
-$('copy-submission').addEventListener('click', async () => { try { await navigator.clipboard.writeText(submissionBody); notify('Submission copied. Paste it into your GitHub issue.'); } catch { formError('Clipboard access is unavailable. Please use the GitHub form link in the introduction.'); } });
+mountProjectForm({activity: params.get('activity') || ''});
 route(false); render(); loadProjects();

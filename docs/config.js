@@ -9,7 +9,7 @@ export const PRODUCTS = [
   'Wio Tracker L1 Lite', 'SenseCAP Indicator', 'Wio Tracker 1110 Dev Kit',
 ];
 export const ACTIVITIES = [
-  { id: 'l2-pro', title: 'Build With Wio Tracker L2 Pro', url: null },
+  { id: 'l2-pro', title: 'Build With Wio Tracker L2 Pro', url: './l2.html' },
   { id: 'build-off-2026', title: 'Meshtastic Build-Off 2026', url: 'https://www.seeedstudio.com/meshtastic-build-off' },
   { id: 'design-2025', title: 'Meshtastic Device Design Challenge', url: 'https://www.hackster.io/contests/SeeedMeshtasticDeviceDesign2025' },
 ];
