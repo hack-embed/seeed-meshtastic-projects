@@ -1,0 +1,61 @@
+/* Mesh Lab's original light palette. Loaded only by the hub, not the L2 activity. */
+:root {
+  --ink:#233429;
+  --muted:#687367;
+  --green:#648a38;
+  --line:#dfe3d8;
+  --paper:#f8f9f4;
+  --lime:#dcefbb;
+  color-scheme:light;
+}
+body { background:var(--paper); }
+.site-header { background:#f8f9f4ed; }
+.brand img { background:transparent; }
+.brand small { color:var(--muted); }
+.button.dark { background:var(--ink); color:white; }
+.button.dark:hover { background:#40553a; }
+#main-nav a.button { color:white; }
+.button.outline { background:transparent; border-color:var(--line); }
+.button.outline:hover { background:#edf2e4; }
+.resource-num,.card-category { color:var(--green); }
+.search,select { background:white; color:var(--ink); border-color:#d7ddce; }
+.search kbd { border-color:var(--line); color:var(--muted); }
+.tab { color:var(--muted); }
+.tab:hover { background:#e9ede1; }
+.tab[aria-pressed="true"] { background:var(--lime); color:var(--ink); }
+.project-card { background:white; box-shadow:0 4px 14px #263b2b05; }
+.project-card:hover { border-color:#a6b993; box-shadow:0 9px 24px #263b2b0a; }
+.card-cover,.detail-image { background:white; }
+.card-cover img { mix-blend-mode:normal; }
+.card-description { color:var(--muted); }
+.card-bottom { border-color:#edf0e7; }
+.tag { background:#f0f3ea; color:#526346; }
+.contribution,.featured-activity { background:#eaf1dc; border-color:#d5dfc7; }
+.contribution .eyebrow { color:var(--green); }
+.contribution p:last-child,.featured-activity p:not(.eyebrow):not(.activity-slogan) { color:#607052; }
+.contact-card,.project-form { background:white; border-color:var(--line); }
+.contact-card:hover { border-color:var(--green); }
+.project-form input:not([type="checkbox"]),.project-form textarea,.project-form select { background:#fcfdf9; border-color:#d5dccd; color:var(--ink); }
+.project-form input::placeholder,.project-form textarea::placeholder { color:#687367; }
+.check-option { background:white; border-color:var(--line); }
+.check-option:has(input:checked) { background:#f1f6e9; border-color:#839e63; }
+.required,.submission-guide li { color:#527632; }
+.form-error { color:#a63122; }
+.submission-ready { background:#edf3e3; }
+.repo-import { background:#f1f6e9; border-color:#d5dfc7; }
+.activity-context { background:#edf3e3; border-color:var(--green); }
+.dialog-close { background:white; border-color:var(--line); color:var(--ink); }
+dialog { box-shadow:0 30px 100px #23342933; }
+.detail-actions [aria-pressed="true"] { color:#9a3850; border-color:#ddb5bd; background:#fff4f6; }
+.toast { background:var(--ink); color:white; }
+.activity-product { background:radial-gradient(ellipse at 50% 65%,#c7dda280,transparent 65%),repeating-linear-gradient(0deg,transparent,transparent 39px,#6e8e4420 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,#6e8e4420 40px),#e3edcd; }
+.activity-product > span:last-child { color:#526a3b; }
+.activity-product img { filter:drop-shadow(8px 22px 18px #23342933); }
+.campaign-banner { background:radial-gradient(ellipse at 75% 45%,#c7dda280,transparent 60%),#eaf1dc; border-color:#c9d9b5; }
+.campaign-banner .eyebrow,.campaign-banner p { color:#526a3b; }
+.campaign-cta { color:var(--ink); }
+.banner-side-note { color:#526a3b; }
+.banner-device img { filter:drop-shadow(8px 14px 8px #23342933); }
+@media(max-width:760px) {
+  .header-inner nav { background:var(--paper); }
+}
