@@ -1,0 +1,42 @@
+name: Review and update project catalog
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: read
+concurrency:
+  group: mesh-lab-catalog
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.event_name != 'issues' || github.event.label.name == 'ae-approved' || github.event.label.name == 'project-discussion'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate approval and update catalog
+        run: node scripts/update-catalog.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AE_REVIEWERS: ${{ vars.AE_REVIEWERS }}
+      - name: Validate published data
+        run: node scripts/validate.mjs
+      - name: Commit reviewed catalog changes
+        run: |
+          if ! git diff --quiet -- docs/data; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add docs/data
+            git commit -m 'Update reviewed Mesh Lab projects and community counts'
+            git push origin HEAD:main
+          fi

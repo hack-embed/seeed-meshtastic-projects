@@ -1,120 +1,626 @@
 [
   {
+    "id": "meshcore-open-images",
+    "title": "MeshCore Open · Images over LoRa",
+    "description": "Share AI-reconstructed images over a low-bandwidth MeshCore network. MeshCore Open encodes a small representation on the sender and reconstructs a similar image on the receiver. Reconstructed details may differ from the original.",
+    "categories": [
+      "APP",
+      "Intelligent System"
+    ],
+    "products": [
+      "Wio Tracker L1 Pro",
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1 series",
+      "Phone running MeshCore Open"
+    ],
+    "tags": [
+      "MeshCore",
+      "AI",
+      "Image transmission",
+      "AEIC-SE"
+    ],
+    "author": "MeshCore Open community / Seeed Studio",
+    "url": "https://wiki.seeedstudio.com/meshcore_ai_image_transmission_l1/",
+    "image": "https://files.seeedstudio.com/wiki/SenseCAP/Meshcore/MeshCoreOpen/MeshCore_Open_Project.png",
+    "source": "https://wiki.seeedstudio.com/meshcore_ai_image_transmission_l1/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Install a MeshCore Open app release that supports image transmission, following the current project documentation.",
+      "Connect a compatible MeshCore node, configure the LoRa region and network, and prepare a second node as the receiver.",
+      "Enable image transmission and download the machine-learning model files in app settings.",
+      "Choose an image and send it. The receiving app reconstructs the image from the compressed representation.",
+      "Use reconstructed images for general scene awareness; they are not exact copies suitable for evidence or precise image analysis."
+    ],
+    "resources": [
+      {
+        "label": "Seeed Wiki tutorial",
+        "url": "https://wiki.seeedstudio.com/meshcore_ai_image_transmission_l1/"
+      },
+      {
+        "label": "MeshCore Open getting started",
+        "url": "https://meshcoreopen.org/docs/getting-started/"
+      },
+      {
+        "label": "AEIC-SE image codec",
+        "url": "https://huggingface.co/zjs81/aeic-se-onnx"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "easyskymesh",
+    "title": "EasySkyMesh · Low-Power Mesh Firmware",
+    "description": "Build low-power sensor networks with EasySkyMesh, a community firmware based on MeshCore. Add power-saving features and supported I2C sensors to Wio Tracker L1 for remote monitoring and off-grid experiments.",
+    "categories": [
+      "Firmware",
+      "Integrations"
+    ],
+    "products": [
+      "Wio Tracker L1 Pro",
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1 Pro",
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "MeshCore",
+      "IoT",
+      "Sensors",
+      "Power saving"
+    ],
+    "author": "IoTThinks / EasySkyMesh community",
+    "url": "https://wiki.seeedstudio.com/easyskymesh_wio_tracker_l1/",
+    "image": "https://files.seeedstudio.com/wiki/SenseCAP/Meshcore/Wio_Tracker_L1/EasySkyMesh/EasySkyMeshProject.png",
+    "source": "https://wiki.seeedstudio.com/easyskymesh_wio_tracker_l1/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Connect Wio Tracker L1 to a computer with a USB data cable.",
+      "Download an EasySkyMesh release matching your board and installation type.",
+      "Open the MeshCore Web Flasher, choose Custom Firmware, select the file, and enter DFU mode when prompted. Flash and reboot.",
+      "Configure the regional radio settings. Companion power saving is enabled by default; repeaters and room servers require the powersaving on CLI command.",
+      "Connect supported sensors with the correct voltage and I2C wiring; follow the project sensor guide."
+    ],
+    "resources": [
+      {
+        "label": "Seeed Wiki setup guide",
+        "url": "https://wiki.seeedstudio.com/easyskymesh_wio_tracker_l1/"
+      },
+      {
+        "label": "Source code & releases",
+        "url": "https://github.com/IoTThinks/EasySkyMesh"
+      },
+      {
+        "label": "MeshCore Web Flasher",
+        "url": "https://meshcore.io/flasher"
+      },
+      {
+        "label": "Sensor setup",
+        "url": "https://github.com/IoTThinks/EasySkyMesh/blob/main/firmware/Add-sensors-to-repeaters.md"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "pocketmesh",
+    "title": "Magnetic Wireless Charger",
+    "description": "It integrates Wio Tracker L1 into a compact magnetic wireless power bank, enabling phone charging, node power supply, and a more portable antenna-integrated design.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Hardware"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Saheen Palayi",
+    "url": "https://www.hackster.io/saheenpalayi/pocketmesh-bank-an-everyday-power-bank-meshtastic-node-20202b",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage1.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/saheenpalayi/pocketmesh-bank-an-everyday-power-bank-meshtastic-node-20202b"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      },
+      {
+        "label": "PocketMesh Bank",
+        "url": "https://www.youtube.com/watch?v=gsW4RvVaC_4"
+      },
+      {
+        "label": "3D design files (Autodesk)",
+        "url": "https://a360.co/4nJFKRY"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "wiofold",
+    "title": "WioFold Communicator",
+    "description": "A foldable Wio Tracker L1-based Meshtastic communicator with a physical keyboard and replaceable 18650 battery.",
+    "categories": [
+      "3D Prints & Enclosures"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Dávid Czipó",
+    "url": "https://www.hackster.io/czipod/the-wio-tracker-l1-meshtastic-communicator-9465eb",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage2.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/czipod/the-wio-tracker-l1-meshtastic-communicator-9465eb"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "lorider",
+    "title": "Ride Trace",
+    "description": "A compact bike-mounted Meshtastic tracker built on Wio Tracker L1, designed for GPS tracking, anti-theft alerts, front light functionality, and discreet everyday riding use.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Hardware"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Miriam Choi",
+    "url": "https://www.hackster.io/Milliam/lorider-the-meshatastic-0cffeb",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage3.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/Milliam/lorider-the-meshatastic-0cffeb"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "l1-gateway",
+    "title": "Wio Tracker L1 Gateway",
+    "description": "A hybrid Meshtastic gateway based on Wio Tracker L1, designed to collect environmental telemetry, relay it across the mesh, and bridge it to the cloud via MQTT for real-time remote monitoring.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Integrations"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Hendra Kusumah",
+    "url": "https://www.hackster.io/hendra/wio-tracker-l1-gateway-9421c2",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage4.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/hendra/wio-tracker-l1-gateway-9421c2"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "seeedpod",
+    "title": "A Self-Sustaining Meshtastic Node Family",
+    "description": "A modular Meshtastic node ecosystem built around Wio Tracker L1, designed for off-grid deployment, urban portability, and everyday backup use with self-sustaining power options.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Hardware"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Jack",
+    "url": "https://www.hackster.io/jrbanks777/seeedpod-ultimate-77168f",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage5.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/jrbanks777/seeedpod-ultimate-77168f"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "solar-station",
+    "title": "Dual Wio Tracker L1 Portable Solar Station",
+    "description": "A rugged portable solar station designed to charge two Wio Tracker L1 nodes anywhere, while also enabling Grove sensor integration for off-grid monitoring and emergency communication.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Hardware"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Fernando Doutel",
+    "url": "https://www.hackster.io/fernando-doutel/dual-wio-tracker-l1-portable-solar-station-e3fcc1",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage6.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/fernando-doutel/dual-wio-tracker-l1-portable-solar-station-e3fcc1"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "meshy",
+    "title": "Meshy: A Rugged 3D-Printed Case for Wio Tracker L1 E-ink",
+    "description": "This is a 3D-printed protective case for the Wio Tracker L1 E-ink, designed to improve durability, portability, and mounting convenience for outdoor and everyday carry use. Its parametric design supports different battery sizes and mounting structures, and includes a clip-on mount for belts, backpacks, or MOLLE gear.",
+    "categories": [
+      "3D Prints & Enclosures"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1 E-ink"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Akash",
+    "url": "https://www.hackster.io/akashedamana/meshy-wio-tracker-l1-e-ink-3d-printed-case-affad1",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage7.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/akashedamana/meshy-wio-tracker-l1-e-ink-3d-printed-case-affad1"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      },
+      {
+        "label": "3D design files (Autodesk)",
+        "url": "https://a360.co/3KNHxqQ"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "meshpack",
+    "title": "MeshPack Pro L1",
+    "description": "A rugged, modular 3D-printed enclosure for Wio Tracker L1, designed to turn the board into a more durable and customizable handheld Meshtastic device.",
+    "categories": [
+      "3D Prints & Enclosures"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1 E-ink"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Alley Cat",
+    "url": "https://www.hackster.io/alleycat/acos-meshpack-pro-l1-for-meshtastic-1ec031",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage8.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/alleycat/acos-meshpack-pro-l1-for-meshtastic-1ec031"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "solar-communicator",
+    "title": "Solar Off-Grid Mesh Communicator",
+    "description": "A self-contained off-grid Meshtastic communicator built around Wio Tracker L1, combining a mini keyboard, E-ink display, vibration alerts, and rear solar charging for portable everyday and outdoor use.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Hardware"
+    ],
+    "products": [
+      "Wio Tracker L1/E-ink"
+    ],
+    "devices": [
+      "Wio Tracker L1 E-ink"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "Bastiaan Slee",
+    "url": "https://www.hackster.io/bastiaan-slee/meshtastic-20-25-cd4c1f",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage9.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/bastiaan-slee/meshtastic-20-25-cd4c1f"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
+    "id": "skysense",
+    "title": "SkySense Flying Lab",
+    "description": "A balloon-borne flying laboratory built with Wio Tracker L1, combining environmental sensing, GPS tracking, image capture, and LoRa telemetry for low-cost aerial experiments.",
+    "categories": [
+      "3D Prints & Enclosures",
+      "Intelligent System"
+    ],
+    "products": [
+      "Wio Tracker L1 Lite"
+    ],
+    "devices": [
+      "Wio Tracker L1 Lite"
+    ],
+    "tags": [
+      "Meshtastic",
+      "3D printing"
+    ],
+    "author": "pasquale887",
+    "url": "https://www.hackster.io/pasquale887/skysense-the-perfect-flying-laboratory-bb39db",
+    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage10.png",
+    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/",
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original build guide below for the parts list, design files, and assembly instructions.",
+      "Check the board variant and enclosure dimensions before printing or assembling.",
+      "Follow the original maker's firmware and radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original build guide",
+        "url": "https://www.hackster.io/pasquale887/skysense-the-perfect-flying-laboratory-bb39db"
+      },
+      {
+        "label": "Seeed Wiki collection",
+        "url": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+      }
+    ],
+    "activity": null
+  },
+  {
     "id": "meshclaw",
-    "title": "MeshClaw · 把 AI 接入 Mesh",
-    "description": "通过 Meshtastic 的 LoRa 网络与 AI 助手交流。插件连接 OpenClaw 与无线节点，可搭配云端模型或本地模型；完整离线使用需要本地推理设备。",
-    "category": "AI 与自动化",
+    "title": "MeshClaw · Bring AI to the Mesh",
+    "description": "Connect an AI assistant to a Meshtastic LoRa network through OpenClaw. Use cloud or local models; fully offline operation requires a local inference device.",
     "devices": [
       "XIAO ESP32S3 + Wio-SX1262",
       "Wio Tracker L1 Pro",
       "SenseCAP T1000-E"
     ],
-    "tags": ["OpenClaw", "AI", "LoRa"],
+    "tags": [
+      "OpenClaw",
+      "AI",
+      "LoRa"
+    ],
     "author": "Seeed Solution",
-    "kind": "开源代码",
     "url": "https://github.com/Seeed-Solution/MeshClaw",
-    "image": "https://raw.githubusercontent.com/Seeed-Solution/MeshClaw/main/media/GoMeshClaw.png"
-  },
-  {
-    "id": "wiofold",
-    "title": "WioFold · 折叠式通信终端",
-    "description": "基于 Wio Tracker L1 的折叠式 Meshtastic 通信器，将实体键盘与可更换的 18650 电池集成进便携机身，探索离网通信的另一种形态。",
-    "category": "外壳与改装",
-    "devices": ["Wio Tracker L1"],
-    "tags": ["3D 打印", "键盘", "外壳"],
-    "author": "Dávid Czipó",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/czipod/the-wio-tracker-l1-meshtastic-communicator-9465eb",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage2.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
-  },
-  {
-    "id": "solar-station",
-    "title": "双节点便携太阳能电站",
-    "description": "为两台 Wio Tracker L1 供电的便携式太阳能充电站。结合坚固外壳与 Grove 传感器扩展，用于离网环境监测和应急通信探索。",
-    "category": "太阳能与供电",
-    "devices": ["Wio Tracker L1"],
-    "tags": ["Solar", "太阳能", "Grove"],
-    "author": "Fernando Doutel",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/fernando-doutel/dual-wio-tracker-l1-portable-solar-station-e3fcc1",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage6.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+    "image": "https://raw.githubusercontent.com/Seeed-Solution/MeshClaw/main/media/GoMeshClaw.png",
+    "categories": [
+      "Intelligent System",
+      "Integrations"
+    ],
+    "products": [
+      "XIAO",
+      "Wio Tracker L1 Pro",
+      "SenseCAP T1000-E"
+    ],
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original project documentation below for the required hardware and installation steps.",
+      "Follow the project wiring, software, and regional radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original project and instructions",
+        "url": "https://github.com/Seeed-Solution/MeshClaw"
+      }
+    ],
+    "activity": null
   },
   {
     "id": "recamera-detection",
-    "title": "让 reCamera 通过 LoRa 发出告警",
-    "description": "reCamera 在本地识别人形，通过 GPIO 触发 XIAO ESP32S3 + Wio-SX1262 节点，把检测告警广播到 Meshtastic 网络，供远端节点和手机接收。",
-    "category": "AI 与自动化",
-    "devices": ["XIAO ESP32S3 + Wio-SX1262", "Wio Tracker L1 Pro"],
-    "tags": ["reCamera", "YOLO", "GPIO"],
+    "title": "reCamera · Human Detection over LoRa",
+    "description": "Detect people locally with reCamera and use GPIO to trigger a XIAO ESP32S3 + Wio-SX1262 node. Broadcast detection alerts across Meshtastic to remote nodes and phones.",
+    "devices": [
+      "XIAO ESP32S3 + Wio-SX1262",
+      "Wio Tracker L1 Pro"
+    ],
+    "tags": [
+      "reCamera",
+      "YOLO",
+      "GPIO"
+    ],
     "author": "Seeed Studio · John Xiang",
-    "kind": "制作教程",
     "url": "https://wiki.seeedstudio.com/ai_human_detection_meshtastic_broadcast/",
-    "image": "https://files.seeedstudio.com/wiki/reCamera/Applications/Meshtastic/1_1_3.jpg"
-  },
-  {
-    "id": "lorider",
-    "title": "LoRider · 把 Mesh 装上自行车",
-    "description": "以 Wio Tracker L1 为核心的自行车设备，围绕 GPS 追踪、防盗告警与车灯功能展开设计，让节点融入日常骑行。",
-    "category": "户外与定位",
-    "devices": ["Wio Tracker L1"],
-    "tags": ["GPS", "骑行", "定位"],
-    "author": "Miriam Choi",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/Milliam/lorider-the-meshatastic-0cffeb",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage3.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
-  },
-  {
-    "id": "l1-gateway",
-    "title": "Wio Tracker L1 环境监测网关",
-    "description": "采集环境遥测信息，通过 Mesh 网络转发，再经 MQTT 对接云端。把无线节点与远程监测系统连接起来。",
-    "category": "网络与网关",
-    "devices": ["Wio Tracker L1"],
-    "tags": ["MQTT", "遥测", "传感器"],
-    "author": "Hendra Kusumah",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/hendra/wio-tracker-l1-gateway-9421c2",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage4.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
-  },
-  {
-    "id": "pocketmesh",
-    "title": "PocketMesh Bank · 充电宝里的节点",
-    "description": "把 Wio Tracker L1 融入磁吸无线充电宝。一个便携装置兼顾手机充电、节点供电和天线收纳，适合随身携带。",
-    "category": "太阳能与供电",
-    "devices": ["Wio Tracker L1"],
-    "tags": ["无线充电", "便携", "供电"],
-    "author": "Saheen Palayi",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/saheenpalayi/pocketmesh-bank-an-everyday-power-bank-meshtastic-node-20202b",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage1.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
-  },
-  {
-    "id": "meshy",
-    "title": "Meshy · 为墨水屏节点穿上外壳",
-    "description": "为 Wio Tracker L1 E-ink 设计的参数化 3D 打印保护壳，可适配不同电池尺寸，支持腰带、背包或 MOLLE 安装，提升户外携带便利性。",
-    "category": "外壳与改装",
-    "devices": ["Wio Tracker L1 E-ink"],
-    "tags": ["E-ink", "3D 打印", "外壳"],
-    "author": "Akash",
-    "kind": "社区制作",
-    "url": "https://www.hackster.io/akashedamana/meshy-wio-tracker-l1-e-ink-3d-printed-case-affad1",
-    "image": "https://files.seeedstudio.com/wiki/wiki%20images/3d%20Enclosure/6.23dimage7.png",
-    "source": "https://wiki.seeedstudio.com/wio_tracker_l1_3d_enclosure/"
+    "image": "https://files.seeedstudio.com/wiki/reCamera/Applications/Meshtastic/1_1_3.jpg",
+    "categories": [
+      "Intelligent System",
+      "Integrations"
+    ],
+    "products": [
+      "XIAO",
+      "Wio Tracker L1 Pro"
+    ],
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original project documentation below for the required hardware and installation steps.",
+      "Follow the project wiring, software, and regional radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original project and instructions",
+        "url": "https://wiki.seeedstudio.com/ai_human_detection_meshtastic_broadcast/"
+      }
+    ],
+    "activity": null
   },
   {
     "id": "hailo-people",
-    "title": "Hailo AI 人流统计与 Mesh 广播",
-    "description": "利用 reComputer AI Box 的 Hailo NPU 加速 YOLO，对摄像头画面进行分区人流统计，再通过 Meshtastic 将结果传送到远端节点。",
-    "category": "AI 与自动化",
-    "devices": ["XIAO nRF52840 + Wio-SX1262"],
-    "tags": ["Hailo", "reComputer", "YOLO"],
+    "title": "Hailo AI · People Counting over Mesh",
+    "description": "Use the Hailo NPU in a reComputer AI Box to accelerate YOLO people counting, then send zone counts to remote nodes over Meshtastic.",
+    "devices": [
+      "XIAO nRF52840 + Wio-SX1262"
+    ],
+    "tags": [
+      "Hailo",
+      "reComputer",
+      "YOLO"
+    ],
     "author": "Seeed Projects",
-    "kind": "开源代码",
     "url": "https://github.com/Seeed-Projects/Hailo-AI-Box-Mashtastic",
-    "image": "https://raw.githubusercontent.com/Seeed-Projects/Hailo-AI-Box-Mashtastic/master/resource/connection.png"
+    "image": "https://raw.githubusercontent.com/Seeed-Projects/Hailo-AI-Box-Mashtastic/master/resource/connection.png",
+    "categories": [
+      "Intelligent System",
+      "Integrations"
+    ],
+    "products": [
+      "XIAO nRF52840"
+    ],
+    "addedAt": "2026-09-24",
+    "setup": [
+      "Open the original project documentation below for the required hardware and installation steps.",
+      "Follow the project wiring, software, and regional radio configuration instructions."
+    ],
+    "resources": [
+      {
+        "label": "Original project and instructions",
+        "url": "https://github.com/Seeed-Projects/Hailo-AI-Box-Mashtastic"
+      }
+    ],
+    "activity": null
   }
 ]

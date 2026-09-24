@@ -1,48 +1,153 @@
-name: 分享 Meshtastic 项目
-description: 推荐一个基于 Seeed 硬件的 Meshtastic 项目
-title: "[项目投稿] "
-body:
-  - type: input
-    id: name
-    attributes:
-      label: 项目名称
-    validations:
-      required: true
-  - type: input
-    id: author
-    attributes:
-      label: 原作者
-    validations:
-      required: true
-  - type: textarea
-    id: description
-    attributes:
-      label: 项目介绍
-      description: 它解决什么问题？有什么特色？
-    validations:
-      required: true
-  - type: input
-    id: hardware
-    attributes:
-      label: 使用的 Seeed 设备
-      placeholder: Wio Tracker L1 / XIAO ESP32S3 + Wio-SX1262 / T1000-E
-    validations:
-      required: true
-  - type: input
-    id: link
-    attributes:
-      label: 项目链接
-      description: 公开源码、设计文件或制作教程的 HTTPS 链接
-    validations:
-      required: true
-  - type: input
-    id: image
-    attributes:
-      label: 封面图片链接（可选）
-  - type: checkboxes
-    id: attribution
-    attributes:
-      label: 署名与授权
-      options:
-        - label: 已注明原作者，且有权分享提交的内容和图片。
-          required: true
+{
+  "name": "Submit a Mesh Lab project",
+  "description": "Share a project built with Seeed hardware",
+  "title": "[Project] ",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Share your project with Mesh Lab. Sign in to GitHub to submit. The AE team reviews every project before publication. This issue is public: do not include your email. For activity rewards, send your contact email and issue link privately to sensecap@seeed.cc."
+      }
+    },
+    {
+      "type": "input",
+      "id": "title",
+      "attributes": {
+        "label": "Project Title"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "author",
+      "attributes": {
+        "label": "Author / Maker"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "attributes": {
+        "label": "Project Description"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "image",
+      "attributes": {
+        "label": "Project Cover Image",
+        "description": "Paste a public HTTPS image URL or upload one image here."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "hardware",
+      "attributes": {
+        "label": "Hardware",
+        "multiple": true,
+        "options": [
+          "Wio Tracker L1 Pro",
+          "Wio Tracker L1/E-ink",
+          "Solar Node P1 series",
+          "Wio Tracker L2 Pro",
+          "XIAO nRF52840",
+          "XIAO",
+          "SenseCAP T1000-E",
+          "SenseCAP T1000-C",
+          "SenseCAP MeshTracker X1",
+          "Wio Tracker L1 Lite",
+          "SenseCAP Indicator",
+          "Wio Tracker 1110 Dev Kit"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "category",
+      "attributes": {
+        "label": "Category",
+        "multiple": true,
+        "options": [
+          "3D Prints & Enclosures",
+          "Firmware",
+          "Hardware",
+          "APP",
+          "Integrations",
+          "Intelligent System",
+          "Others"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "setup",
+      "attributes": {
+        "label": "Setup Instructions",
+        "description": "Optional. Assembly, firmware, and configuration steps."
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "resources",
+      "attributes": {
+        "label": "Resources & Links",
+        "description": "One public HTTPS URL per line. Put the main project link first."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "activity",
+      "attributes": {
+        "label": "Related Activity",
+        "options": [
+          "No related activity",
+          "Build With Wio Tracker L2 Pro",
+          "Meshtastic Build-Off 2026",
+          "Meshtastic Device Design Challenge"
+        ],
+        "default": 0
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "social",
+      "attributes": {
+        "label": "Social Links",
+        "description": "Optional, for Build With Wio Tracker L2 Pro only. One HTTPS URL per line. These links may be shared with the Seeed marketing team."
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "attribution",
+      "attributes": {
+        "label": "Attribution",
+        "options": [
+          {
+            "label": "I have credited the original maker and have permission to share this content and its images.",
+            "required": true
+          }
+        ]
+      }
+    }
+  ]
+}

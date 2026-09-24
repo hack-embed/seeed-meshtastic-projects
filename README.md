@@ -1,84 +1,86 @@
-# Mesh Works · Seeed Meshtastic 项目集合
+# Mesh Lab
 
-一个独立的社区项目索引，收集基于 Seeed 硬件的 Meshtastic 开源代码、制作教程与硬件创意。采用原生 HTML / CSS / JavaScript，无框架、无构建依赖。
+An English-language community project collection for Seeed Mesh hardware. Built with static HTML, CSS, and JavaScript. No frontend build or server is required.
 
-默认发布地址：<https://hack-embed.github.io/seeed-meshtastic-projects/>
+**Website:** https://hack-embed.github.io/seeed-meshtastic-projects/
 
-## 本地运行
-
-安装 Python 3 后，从仓库根目录运行：
+## Run locally
 
 ```sh
 python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
 ```
 
-打开 <http://127.0.0.1:8765/>。不要直接双击 HTML 文件，浏览器需要通过 HTTP 读取项目 JSON。项目封面使用外部图片，需要联网；加载失败会显示文字封面。
+Open http://127.0.0.1:8765/. The site has Home, Projects, Community Activities, Submit a Project, and Contact Us routes. Existing `#projects` links remain valid. Individual projects have shareable `?project=ID#projects` URLs.
 
-## 公网部署：GitHub Pages
-
-1. 把本仓库推送到自己的 GitHub 公开仓库。
-2. 打开仓库 **Settings → Pages**。
-3. 在 **Build and deployment** 中选择 **Deploy from a branch**。
-4. 选择 `main` 分支和 `/docs` 文件夹，点击 Save。
-5. 等待自动生成的 `pages-build-deployment` 任务成功，即可访问 `https://用户名.github.io/仓库名/`。
-
-本项目使用 `.nojekyll`，GitHub 直接发布静态文件，不需要 `npm install` 或 `npm run build`。GitHub Free 支持公开仓库的 Pages 托管，不需要购买服务器；自定义域名的注册费用另计。
-
-后续每次向 `main` 推送更新，Pages 都会自动重新发布。域名可在 **Settings → Pages → Custom domain** 绑定，并按 GitHub 提示配置 DNS、启用 HTTPS。
-
-如果更换账号或仓库名，修改 `docs/index.html` 中 `repo-link` 和 `submit-link` 两个链接，再更新本说明中的网站地址。其他站内资源均使用相对路径，可部署在子目录。
-
-官方说明：<https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site>
-
-## 添加和维护项目
-
-编辑 `docs/data/projects.json`，复制一条现有记录并填写：
-
-| 字段          | 含义                                                              |
-| ------------- | ----------------------------------------------------------------- |
-| `id`          | 唯一标识，使用小写英文和连字符；发布后尽量不变                    |
-| `title`       | 项目名称                                                          |
-| `description` | 中文简介，不宣称未核实的能力                                      |
-| `category`    | AI 与自动化 / 户外与定位 / 外壳与改装 / 太阳能与供电 / 网络与网关 |
-| `devices`     | 设备名称数组，保持同一设备名称一致                                |
-| `tags`        | 搜索关键词数组                                                    |
-| `author`      | 原作者                                                            |
-| `kind`        | 开源代码 / 制作教程 / 社区制作                                    |
-| `url`         | 原项目或教程的 HTTPS 地址                                         |
-| `image`       | 获准使用的封面图片 HTTPS 地址；可以留空                           |
-| `source`      | 可选，收录信息的来源页面                                          |
-
-项目按照数据文件顺序展示。增加设备名称会自动生成对应筛选项。检查数据和语法：
+## Checks
 
 ```sh
-node scripts/validate.mjs
-node --check docs/app.js
+npm ci
+npm run validate
+npm test
+npx playwright test
 ```
 
-浏览器检查：搜索 `esp32s3`；按分类和设备交叉筛选；搜索无匹配词后清除筛选；打开详情后用 Escape 关闭；收藏、刷新并筛选收藏；在手机宽度下检查卡片与投稿说明。
+The browser suite covers combined filters, empty states, sorting, persistence, modal deep links, form validation, private email exclusion, unsafe text rendering, fetch retry, and desktop/mobile layouts. On macOS it uses installed Chrome. Elsewhere, install Playwright Chromium and omit `executablePath` in `playwright.config.js`.
 
-## 投稿和收藏
+## Submission and AE approval
 
-- **投稿**：访问者登录 GitHub 后填写 Issue 表单（`.github/ISSUE_TEMPLATE/project.yml`）。维护者核实原作者、硬件、源码或教程链接、封面授权后，手动加入数据文件。提交 Issue 不会直接发布内容。
-- **收藏**：保存在当前浏览器的 `localStorage`。不会同步到其他设备，不是公共点赞统计。清理浏览器数据会清除收藏。
-- **搜索**：在浏览器执行，支持多关键词交集，以及设备名的大小写、空格和连字符归一化。筛选状态保存在 URL，便于分享。
+1. A maker fills the website form and continues to GitHub, or signs into GitHub and fills the native Issue Form. GitHub sign-in is required to create the issue. The website itself does not authenticate users or collect GitHub credentials.
+2. The form creates a **public issue**, not a published project. Long submissions use a copy-and-paste fallback when they exceed a safe URL length. Cover images can be supplied as HTTPS URLs or uploaded in GitHub's native form.
+3. AE checks the content, author attribution, hardware, image permission, setup instructions, and links. Reviewers must have repository write/maintain/admin permission. Optionally set the repository Actions variable `AE_REVIEWERS` to a comma-separated list of authorized GitHub logins; when set, only those maintainers can approve.
+4. AE adds the `ae-approved` label. `Review and update project catalog` parses and validates the issue, writes `docs/data/projects.json`, and commits the result to `main`.
+5. `Deploy Mesh Lab` runs when the catalog workflow succeeds and publishes the current `main` version. A failed review/validation run does not deploy. Editing an approved issue does **not** republish it automatically; AE must remove and re-add `ae-approved` after reviewing the changes.
+6. Approved L2 activity social links are collected in `docs/data/activity-social-links.json` for marketing. No messages are sent automatically.
 
-## 文件结构
+Create the repository labels `ae-approved` and `project-discussion` before use. Branch rules must allow the GitHub Actions bot to commit catalog updates. Do not give ordinary submitters write access just to use the form.
 
-```text
-docs/
-  index.html              页面结构
-  style.css               响应式样式
-  app.js                  筛选、搜索、详情、收藏
-  data/projects.json      项目目录
-  assets/                 本站绘制的 SVG 标识与示意图
-  .nojekyll               直接发布静态资源
-.github/ISSUE_TEMPLATE/   GitHub 投稿表单
-scripts/validate.mjs      项目数据检查
-```
+### Email privacy
 
-## 来源与范围
+The optional email field is not sent to GitHub, included in the public catalog, or stored in browser storage. The form offers a `mailto:sensecap@seeed.cc` draft containing the contact email and project title, which the maker can send privately with the submission URL. No private email database or automatic reward-contact collection is provided.
 
-首批项目根据 Seeed Solution / Seeed Projects 的公开 GitHub 仓库和 Seeed Wiki 的 Wio Tracker L1 外壳集合整理，每条数据保留原项目链接和作者。社区制作条目不代表已确认其拥有某种开源许可证；代码、设计文件和图片的使用条件以原项目为准。
+## Likes, comments, and shares
 
-项目和封面归各自作者所有，商标归各自权利人所有。本站为独立索引，非 Seeed 或 Meshtastic 官方网站。后续可添加 Cloudflare Workers + D1，实现公共点赞统计或免 GitHub 登录投稿；当前部署不依赖后端。
+- The card's Like button toggles a heart stored in the current browser (`meshlab-likes`). It is not an authenticated global vote. The UI explicitly explains the scope.
+- Public hearts and comment counts come from a linked GitHub issue. The display combines public GitHub hearts with the current browser's heart; a user who also reacts on GitHub can contribute to both. Most Liked sorts by this displayed total.
+- An approved community submission automatically uses its submission issue for comments and public GitHub heart reactions.
+- For imported projects without an issue, Comments opens a prefilled GitHub discussion issue containing `<!-- mesh-lab-project: PROJECT_ID -->`. A maintainer links it by adding `project-discussion`. Reuse the linked issue for subsequent discussion. No public discussions or comments were fabricated during catalog import.
+- GitHub counts refresh on comments, supported label events, manual dispatch, and the hourly workflow schedule. They are snapshots, not live totals. The first linked discussion per project is canonical; avoid labeling duplicates.
+- Share opens the system share sheet or copies the project URL. Its count reflects successful shares/copies in this browser only. Canceled/failed shares are not counted.
+- Cross-device authenticated likes, inline comments, global share counts, and private automatic email storage require a backend or third-party service. They are not implemented by this static deployment.
+
+## Content maintenance
+
+`docs/config.js` defines the categories, product filter groups, activity IDs, and repository URL. Keep the GitHub issue form taxonomy in `.github/ISSUE_TEMPLATE/project.yml` synchronized; a test enforces this. L1 and L1 E-ink share a product filter group; `devices` preserves specific hardware details.
+
+`docs/data/projects.json` stores:
+
+| Field | Purpose |
+| --- | --- |
+| `id`, `title`, `description`, `author` | Stable project identity and English copy |
+| `categories`, `products` | Multi-select filters from the configured taxonomy |
+| `devices`, `tags` | Actual hardware details and search terms |
+| `image`, `url`, `source` | HTTPS cover image, primary project, optional source |
+| `addedAt` | Date added to this collection, not an invented original publication date |
+| `setup`, `resources` | Setup steps and labeled resource URLs |
+| `activity` | Optional configured activity ID, otherwise `null` |
+| `issueNumber`, `socialLinks` | Optional approved submission and public social links |
+
+The 15 curated entries include all 10 enclosure projects from the supplied Wio Tracker L1 Wiki, EasySkyMesh, MeshCore Open image transmission, and the three existing AI projects. Summaries retain source attribution. Catalog dates denote this collection's import date. Images load from their original public sources and have a local fallback if unavailable.
+
+## L2 Pro activity
+
+`docs/l2.html` is the dedicated dark activity page. Home, Project Hub, and Community Activities link to it. It includes build/share rewards, platform milestones, illustrated participation steps, build ideas, documentation, FAQ, and a decorative interactive mesh background. Motion can be paused and automatically stops for reduced-motion preferences or while the hero/tab is hidden.
+
+The activity's Submit a Project buttons open the shared form from `docs/partials/project-form.html`, initialized by `docs/project-form.js`. Wio Tracker L2 Pro and its activity are preselected. Optional public GitHub repository import reads the description and detected license without overwriting fields already filled out. No access token is requested or stored.
+
+Submit Your Link opens a separate social reward review form. It checks supported post domains, post-shaped URLs, and the stated milestone before preparing a GitHub issue. Actual project ownership, approval status, organic metrics, eligibility, and reward fulfillment require human review. The site does not claim to verify these automatically or issue rewards. Review these submissions as separate issues; the existing project catalog approval label must only be used for project submissions.
+
+Purchase buttons are deliberately disabled with Coming Soon text, as requested. Set `purchaseUrl` in `docs/l2-config.js` to enable both buttons. The activity Wiki and contact email are configured there. No deadline, coupon expiration, dispatch time, or merchandise contents have been invented.
+
+The local product cutout `docs/assets/l2-pro.webp` was cropped from the official Seeed Wiki photo at `https://files.seeedstudio.com/wiki/SenseCAP/Wio_Tracker_L2/L2First.png`. Concept panels are labeled as ideas; they do not imply those apps run on the pictured device. Step illustrations are original SVG line art.
+
+## GitHub Pages
+
+In Settings → Pages, choose **GitHub Actions** as the source. The `Deploy Mesh Lab` workflow uploads `docs` directly. It runs on changes to `main`, successful catalog workflow runs, and manual dispatch. The `workflow_run` trigger is necessary because commits made by `GITHUB_TOKEN` do not trigger ordinary push workflows. A custom domain is optional.
+
+All original projects, images, and trademarks belong to their creators. This site is an independent index; check the original resources for licenses and complete instructions.
