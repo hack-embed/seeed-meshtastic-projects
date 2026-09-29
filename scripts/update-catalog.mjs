@@ -29,10 +29,24 @@ if (process.env.GITHUB_EVENT_NAME === 'issues' && event.action === 'labeled' && 
   console.log(`Published approved project ${project.id}.`);
 }
 const engagement = {};
+const PROMPT = 'Share your question or experience below:';
+// Public comment text is mirrored so the site can show the conversation without a GitHub sign-in.
+async function thread(issue, includeOpener) {
+  const entry = (c, body) => ({author:c.user?.login || 'ghost',createdAt:c.created_at,url:c.html_url,body:body.trim().slice(0,2000)});
+  const items = [];
+  const opener = includeOpener ? (issue.body || '').split(PROMPT)[1] || '' : '';
+  if (opener.trim()) items.push(entry(issue,opener));
+  if (issue.comments) {
+    const comments = await api(`issues/${issue.number}/comments?per_page=100`);
+    for (const c of comments) if (c.user?.type !== 'Bot' && c.body?.trim()) items.push(entry(c,c.body));
+  }
+  return items.slice(-20);
+}
+const stat = async (issue, includeOpener) => ({issueNumber:issue.number,hearts:issue.reactions?.heart || 0,comments:issue.comments || 0,thread:await thread(issue,includeOpener)});
 // The original submission is the canonical discussion for approved community projects.
 for (const p of projects.filter(p => p.issueNumber)) {
   const issue = await api(`issues/${p.issueNumber}`);
-  engagement[p.id] = {issueNumber:issue.number,hearts:issue.reactions?.heart || 0,comments:issue.comments || 0};
+  engagement[p.id] = await stat(issue,false);
 }
 // Curated projects can be linked to a maintainer-labeled discussion without inventing counters.
 for (let page=1;;page++) {
@@ -41,7 +55,7 @@ for (let page=1;;page++) {
     if (issue.pull_request) continue;
     const id = /<!-- mesh-lab-project: ([a-z0-9-]+) -->/.exec(issue.body || '')?.[1];
     if (!id || !projects.some(p => p.id === id) || engagement[id]) continue;
-    engagement[id] = {issueNumber:issue.number,hearts:issue.reactions?.heart || 0,comments:issue.comments || 0};
+    engagement[id] = await stat(issue,true);
   }
   if (issues.length < 100) break;
 }

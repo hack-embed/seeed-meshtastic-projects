@@ -8,6 +8,7 @@ const fixture = {
  number:42,labels:[{name:'ae-approved'}],comments:2,reactions:{heart:3},
  body:`### Project Title\n\nTest community build\n\n### Author / Maker\n\nTest Maker\n\n### Project Description\n\nA practical mesh project built with Seeed hardware.\n\n### Project Cover Image\n\nhttps://example.com/image.png\n\n### Hardware\n\nWio Tracker L1 Pro\n\n### Category\n\nHardware\n\n### Resources & Links\n\nhttps://example.com/build\n\n### Related Activity\n\nNo related activity\n\n### Attribution\n\n- [x] I have credited the original maker and have permission to share this content and its images.\n`
 };
+const comments=[{user:{login:'maker',type:'User'},created_at:'2026-09-29T08:00:00Z',html_url:'https://github.com/example/mesh-lab/issues/42#issuecomment-1',body:'Works great!'},{user:{login:'ci-bot',type:'Bot'},created_at:'2026-09-29T08:01:00Z',html_url:'https://github.com/example/mesh-lab/issues/42#issuecomment-2',body:'Automated note'}];
 async function runApproval({permission='write',reviewers='',approved=true,eventName='issues'}={}) {
  const dir=await mkdtemp(join(tmpdir(),'mesh-lab-review-'));
  try {
@@ -16,7 +17,7 @@ async function runApproval({permission='write',reviewers='',approved=true,eventN
   await writeFile(join(dir,'package.json'),' {"type":"module"}');
   const issue=structuredClone(fixture); if(!approved) issue.labels=[];
   await writeFile(join(dir,'event.json'),JSON.stringify({action:'labeled',label:{name:'ae-approved'},sender:{login:'ae-reviewer'},issue:{number:42}}));
-  const mock=`globalThis.fetch=async(url)=>{let body; if(url.includes('/collaborators/')) body=${JSON.stringify({permission})}; else if(url.endsWith('/issues/42')) body=${JSON.stringify(issue)}; else if(url.includes('/issues?')) body=[]; else throw new Error('Unexpected request '+url); return new Response(JSON.stringify(body),{status:200});};`;
+  const mock=`globalThis.fetch=async(url)=>{let body; if(url.includes('/collaborators/')) body=${JSON.stringify({permission})}; else if(url.endsWith('/issues/42')) body=${JSON.stringify(issue)}; else if(url.includes('/issues/42/comments')) body=${JSON.stringify(comments)}; else if(url.includes('/issues?')) body=[]; else throw new Error('Unexpected request '+url); return new Response(JSON.stringify(body),{status:200});};`;
   await writeFile(join(dir,'mock.mjs'),mock);
   const result=spawnSync(process.execPath,['--import',join(dir,'mock.mjs'),join(dir,'scripts/update-catalog.mjs')],{encoding:'utf8',env:{...process.env,GITHUB_REPOSITORY:'example/mesh-lab',GH_TOKEN:'test-only-placeholder',GITHUB_EVENT_NAME:eventName,GITHUB_EVENT_PATH:join(dir,'event.json'),AE_REVIEWERS:reviewers}});
   return {status:result.status,stderr:result.stderr,projects:JSON.parse(await readFile(join(dir,'docs/data/projects.json'),'utf8')),engagement:JSON.parse(await readFile(join(dir,'docs/data/engagement.json'),'utf8'))};
@@ -24,7 +25,7 @@ async function runApproval({permission='write',reviewers='',approved=true,eventN
 }
 test('maintainer approval publishes a validated project and real issue counts',async()=>{
  const result=await runApproval(); assert.equal(result.status,0,result.stderr);
- assert.equal(result.projects[0].id,'community-42'); assert.deepEqual(result.engagement.projects['community-42'],{issueNumber:42,hearts:3,comments:2});
+ assert.equal(result.projects[0].id,'community-42'); assert.deepEqual(result.engagement.projects['community-42'],{issueNumber:42,hearts:3,comments:2,thread:[{author:'maker',createdAt:'2026-09-29T08:00:00Z',url:'https://github.com/example/mesh-lab/issues/42#issuecomment-1',body:'Works great!'}]});
 });
 test('ordinary users and maintainers outside the AE allowlist cannot publish',async()=>{
  for(const options of [{permission:'read'},{reviewers:'different-reviewer'}]) {const r=await runApproval(options); assert.notEqual(r.status,0); assert(!r.projects.some(p=>p.id==='community-42'));}

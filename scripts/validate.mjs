@@ -11,5 +11,6 @@ for (const [id, stats] of Object.entries(engagement.projects)) {
   assert(projects.some(p => p.id === id),`Unknown engagement project: ${id}`);
   for (const field of ['hearts','comments']) assert(Number.isSafeInteger(stats[field]) && stats[field] >= 0,`Invalid ${field}`);
   assert(Number.isSafeInteger(stats.issueNumber) && stats.issueNumber > 0,'Invalid discussion issue');
+  for (const c of stats.thread || []) assert(typeof c.author === 'string' && typeof c.body === 'string' && !Number.isNaN(Date.parse(c.createdAt)),'Invalid comment');
 }
 console.log(`Validated ${projects.length} English projects, taxonomy, URLs, dates, and engagement data.`);
