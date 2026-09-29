@@ -1,24 +1,11 @@
 {
-  "updatedAt": "2026-09-29T08:22:46.475Z",
+  "updatedAt": "2026-09-29T08:32:05.406Z",
   "projects": {
     "meshcore-open-images": {
       "issueNumber": 2,
       "hearts": 0,
-      "comments": 2,
-      "thread": [
-        {
-          "author": "Yvesgoat",
-          "createdAt": "2026-09-29T07:59:11Z",
-          "url": "https://github.com/hack-embed/seeed-meshtastic-projects/issues/2",
-          "body": "0k"
-        },
-        {
-          "author": "Yvesgoat",
-          "createdAt": "2026-09-29T08:22:36Z",
-          "url": "https://github.com/hack-embed/seeed-meshtastic-projects/issues/2#issuecomment-5886457824",
-          "body": "I think we need talk about that"
-        }
-      ]
+      "comments": 0,
+      "thread": []
     }
   }
 }
