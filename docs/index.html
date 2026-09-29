@@ -3,64 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f8f9f4">
-  <meta name="description" content="Your next Mesh project starts here. Explore community builds, open hardware, firmware, and enclosures made with Seeed Studio.">
-  <title>Mesh Lab · Your next Mesh project starts here.</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="LoRa Mesh Lab by Seeed Studio. Your next Mesh project starts here. Discover what the community is building.">
+  <title>LoRa Mesh Lab · Your next Mesh project starts here.</title>
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="./hub-refresh.css">
-  <link rel="stylesheet" href="./hub-light.css">
+  <link rel="stylesheet" href="./base.css">
+  <link rel="stylesheet" href="./hub.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#projects">Skip to projects</a>
   <header class="site-header">
     <div class="shell header-inner">
-      <a href="#home" class="brand" aria-label="Mesh Lab home"><img src="./assets/mark.svg" alt="" width="34" height="34"><span>MESH<span class="brand-light"> LAB</span><small>IDEAS THAT CONNECT</small></span></a>
-      <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu <span aria-hidden="true">☰</span></button>
+      <a href="#home" class="brand" aria-label="LoRa Mesh Lab home"><img src="./assets/seeed-logo.png" alt="Seeed Studio" width="147" height="17"><span class="brand-divider" aria-hidden="true"></span><span class="brand-name">LoRa Mesh Lab</span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu <span aria-hidden="true">☰</span></button>
       <nav id="main-nav" aria-label="Main navigation">
         <a href="#projects">Project Hub</a>
         <a href="#activities">Community Activities</a>
+        <a href="#submit">Contribute a project</a>
         <a href="#contact">Contact Us</a>
-        <a href="#submit" class="button dark">Submit a Project <span aria-hidden="true">↗</span></a>
       </nav>
     </div>
   </header>
   <main id="main-content">
-    <div class="shell home-campaign" id="home">
-      <a class="campaign-banner" href="./l2.html"><div><span class="eyebrow"><span class="status-dot"></span>THE L2 PRO BUILD CHALLENGE</span><h1>A little hardware.<br> A whole new possibility.</h1><p>Create. Share. Get rewarded.</p><span class="campaign-cta">Build with Wio Tracker L2 Pro <span aria-hidden="true">↗</span></span></div><div class="banner-device"><span class="banner-grid" aria-hidden="true"></span><img src="./assets/l2-pro.webp" alt="Wio Tracker L2 Pro" width="608" height="807"></div><span class="banner-side-note">MAKE IT YOURS / L2 PRO</span></a>
-    </div>
-    <section class="catalog shell page-section" id="projects" aria-labelledby="projects-title">
-      <div class="section-heading"><div><p class="eyebrow">PROJECT HUB / BUILT BY THE COMMUNITY</p><h2 class="page-title" id="projects-title">Discover what the<br>community is <span class="green">building.</span></h2></div><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search projects, products, makers…" aria-label="Search projects"><kbd>/</kbd></label></div>
-      <div class="filter-row"><div class="tabs" id="categories" role="group" aria-label="Project category"></div></div>
-      <div class="results-bar"><p id="result-count" role="status" aria-live="polite">Loading projects…</p><div class="catalog-controls"><label class="select-wrap" for="device">Products <select id="device"><option value="all">All products</option></select></label><label class="select-wrap" for="sort">Sort by <select id="sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="likes">Most liked</option></select></label></div></div>
-      <p class="catalog-note" id="catalog-stats">Discover the collection</p>
-      <p class="catalog-note">Dates show when projects were added to Mesh Lab. Hearts include GitHub reactions and likes saved on this device.</p>
+    <section class="home shell" id="home" aria-labelledby="home-title">
+      <p class="pill-badge"><span class="dot" aria-hidden="true"></span>Seeed Studio LoRa Mesh Lab</p>
+      <h1 id="home-title">Your next <span class="green">Mesh</span> project starts here.</h1>
+      <a class="campaign-banner" href="./l2.html">
+        <div class="banner-copy">
+          <span class="banner-label"><span class="dot" aria-hidden="true"></span>Featured Activity</span>
+          <strong class="banner-title">Build with <span>Wio Tracker L2 Pro</span></strong>
+          <span class="banner-slogan">Create. Share. Get rewarded.</span>
+          <span class="button primary">View Activity <span aria-hidden="true">→</span></span>
+        </div>
+        <div class="banner-devices" aria-hidden="true">
+          <img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731" loading="eager">
+          <img src="./assets/l2-screens/tile/01-dashboard.webp" alt="" width="480" height="701" loading="eager">
+          <img src="./assets/l2-screens/tile/06-2048-color-v2.webp" alt="" width="480" height="742" loading="eager">
+        </div>
+      </a>
+    </section>
+
+    <section class="shell hub-section" id="projects" aria-labelledby="projects-title">
+      <div class="section-head">
+        <div><h2 id="projects-title">Project Hub</h2><p class="slogan">Discover what the community is building.</p></div>
+        <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="search" type="search" placeholder="Search projects" aria-label="Search projects"><kbd>/</kbd></label>
+      </div>
+      <div class="filter-block">
+        <div class="filter-line category-line">
+          <span class="filter-label">Category</span>
+          <div class="tabs-wrap"><div class="tabs" id="categories" role="group" aria-label="Category"></div><button class="tabs-next" id="tabs-next" type="button" aria-label="More categories">→</button></div>
+        </div>
+        <div class="filter-line">
+          <span class="filter-label">Device</span>
+          <div class="chips" id="devices" role="group" aria-label="Device"></div>
+          <div class="view-by" id="sort" role="group" aria-label="View by"><span>View by:</span><button type="button" data-sort="newest" aria-pressed="true">Date</button><span aria-hidden="true">|</span><button type="button" data-sort="likes" aria-pressed="false">Likes</button></div>
+        </div>
+      </div>
+      <p id="result-count" class="result-count" role="status" aria-live="polite">Loading projects…</p>
       <div class="project-grid" id="project-grid" aria-label="Projects"></div>
-      <div class="empty-state" id="empty" hidden><span aria-hidden="true">⌕</span><h2>No projects found</h2><p>Try a different keyword, category, or product.</p><button class="button dark" id="reset" type="button">Clear filters</button></div>
-      <div class="empty-state" id="load-error" hidden><h2>We couldn't load the collection</h2><p>Please check your connection and try again.</p><button class="button dark" id="retry" type="button">Try again</button></div>
-      <div class="contribution"><div><p class="eyebrow">THERE'S ROOM FOR YOUR IDEA</p><h2>Made something worth sharing?</h2><p>A new enclosure, a clever integration, or your first working node. We'd love to see it.</p></div><a class="button dark" href="#submit">Submit a Project <span aria-hidden="true">↗</span></a></div>
+      <div class="empty-state" id="empty" hidden><h3>No projects found</h3><p>Try a different keyword, category, or device.</p><button class="button outline" id="reset" type="button">Clear filters</button></div>
+      <div class="empty-state" id="load-error" hidden><h3>Projects are unavailable</h3><p>Please check your connection and try again.</p><button class="button outline" id="retry" type="button">Try again</button></div>
     </section>
-    <section class="shell page-section" id="activities" aria-labelledby="activities-title">
-      <p class="eyebrow">COMMUNITY ACTIVITIES</p><h2 class="page-title" id="activities-title">Build, share, and get inspired<br>by the <span class="green">Seeed community.</span></h2>
-      <article class="featured-activity"><div><p class="eyebrow"><span class="status-dot"></span>FEATURED COMMUNITY ACTIVITY</p><h2>Build with<br>Wio Tracker L2 Pro</h2><p class="activity-slogan">Create. Share. Get rewarded.</p><p>Make a pocket game console, design a custom interface, or build the tool you've always wanted. Mesh and non-mesh projects are welcome.</p><a class="button dark" href="./l2.html">View Activity <span aria-hidden="true">↗</span></a></div><a class="activity-product" href="./l2.html" aria-label="Explore the Wio Tracker L2 Pro activity"><span class="product-crosshair" aria-hidden="true"></span><img src="./assets/l2-pro.webp" alt="Wio Tracker L2 Pro with its touchscreen and antenna" width="608" height="807"><span>YOUR HARDWARE. YOUR NEXT IDEA.</span></a></article>
-      <div class="section-heading past-heading"><div><p class="eyebrow">MORE WAYS TO GET INVOLVED</p><h2>Past Activities</h2></div><span class="text-muted">Good ideas keep connecting.</span></div>
-      <article class="past-activity"><span class="activity-year">2026</span><div><h3>Meshtastic Build-Off 2026</h3><p>A hardware challenge to build Meshtastic devices and development kits using Seeed Studio modules.</p></div><a class="button outline" href="https://www.seeedstudio.com/meshtastic-build-off" target="_blank" rel="noopener noreferrer">View Activity ↗</a></article>
-      <article class="past-activity"><span class="activity-year">2025</span><div><h3>Meshtastic Device Design Challenge</h3><p>Explore community-designed Meshtastic devices and the makers behind them.</p></div><a class="button outline" href="https://www.hackster.io/contests/SeeedMeshtasticDeviceDesign2025" target="_blank" rel="noopener noreferrer">View Activity ↗</a></article>
+
+    <section class="activities" id="activities" aria-labelledby="activities-title">
+      <div class="shell">
+        <h2 id="activities-title">Community Activities</h2>
+        <p class="slogan">Build, share, and get inspired by the Seeed community.</p>
+        <article class="featured-activity">
+          <div class="featured-copy">
+            <p class="featured-label">Featured Activity</p>
+            <h3>Build with<br>Wio Tracker <span class="green">L2 Pro</span></h3>
+            <p class="featured-slogan">Create. Share. Get rewarded.</p>
+            <p>Create firmware, interfaces, games, and more. Share your L2 project and earn rewards.</p>
+            <a class="button primary" href="./l2.html">View Activity <span aria-hidden="true">→</span></a>
+          </div>
+          <a class="featured-media" href="./l2.html" tabindex="-1" aria-hidden="true">
+            <img class="featured-product" src="./assets/l2-pro.webp" alt="" width="608" height="807" loading="lazy">
+            <img class="featured-shot shot-a" src="./assets/l2-screens/tile/02-gps.webp" alt="" width="480" height="694" loading="lazy">
+            <img class="featured-shot shot-b" src="./assets/l2-screens/tile/03-block-stack.webp" alt="" width="480" height="751" loading="lazy">
+          </a>
+        </article>
+        <h3 class="past-title">Past Activities</h3>
+        <ul class="past-list">
+          <li><span class="past-year">2026</span><div><h4>Meshtastic Build-Off 2026</h4><p>A hardware challenge to build Meshtastic devices and development kits using Seeed Studio modules.</p></div><a href="https://www.seeedstudio.com/meshtastic-build-off?srsltid=AU7gw4Xp6hmSdlyYyfUc8gtR6BqHPHL6fznKIV_KAC1SFopYo-wEnpZ2" target="_blank" rel="noopener noreferrer">View Activity <span aria-hidden="true">↗</span></a></li>
+          <li><span class="past-year">2025</span><div><h4>Meshtastic Device Design Challenge</h4><p>Design low-power devices for long-range LoRa mesh networking.</p></div><a href="https://www.hackster.io/contests/SeeedMeshtasticDeviceDesign2025" target="_blank" rel="noopener noreferrer">View Activity <span aria-hidden="true">↗</span></a></li>
+        </ul>
+      </div>
     </section>
-    <section class="shell page-section" id="submit" aria-labelledby="submit-title">
-      <p class="eyebrow">SHARE YOUR BUILD</p><h2 class="page-title" id="submit-title">Your idea could inspire<br>the <span class="green">next connection.</span></h2>
-      <div class="submit-layout"><aside class="submission-guide"><h2>Submit a Project</h2><p>Share what you made, how it works, and what others need to build it.</p><ol><li><strong>Tell your story</strong><span>Complete the form and add a cover image link.</span></li><li><strong>Submit with GitHub</strong><span>Sign in to GitHub to review and send your submission.</span></li><li><strong>Join the collection</strong><span>Our AE team reviews submissions before they appear in Projects.</span></li></ol><a id="direct-submit" class="text-link" href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml" target="_blank" rel="noopener noreferrer">Prefer to fill it out on GitHub? ↗</a><p class="privacy-note">Project submissions are public on GitHub. Your email stays out of the public form.</p></aside>
-      <div id="project-form-mount"><p>Loading the submission form…</p></div></div>
+
+    <section class="shell hub-section" id="submit" aria-labelledby="submit-title">
+      <div class="section-head"><div><h2 id="submit-title">Submit a Project</h2><p class="slogan">Sign in with GitHub to submit. Your project appears in the Project Hub after AE review.</p></div></div>
+      <div id="project-form-mount"><p>Loading the submission form…</p></div>
     </section>
-    <section class="shell page-section" id="contact" aria-labelledby="contact-title">
-      <p class="eyebrow">CONTACT US</p><h2 class="page-title" id="contact-title">Let's make<br><span class="green">a connection.</span></h2><p class="page-intro">Need a hand with your build? Looking for your people?<br>Start a conversation with the Seeed community.</p>
-      <div class="contact-grid"><a class="contact-card" href="mailto:sensecap@seeed.cc"><span class="resource-num">01 / TECHNICAL SUPPORT</span><h2>Here to help.</h2><p>Get support for your Seeed hardware and projects.</p><strong>sensecap@seeed.cc ↗</strong></a><a class="contact-card" href="https://www.facebook.com/groups/1755190828846458" target="_blank" rel="noopener noreferrer"><span class="resource-num">02 / LORA &amp; MESH COMMUNITY</span><h2>Find your community.</h2><p>Meet makers, ask questions, and share your latest build.</p><strong>Join on Facebook ↗</strong></a><a class="contact-card" href="https://discord.gg/eWkprNDMU7" target="_blank" rel="noopener noreferrer"><span class="resource-num">03 / SEEED STUDIO DISCORD</span><h2>Keep the ideas flowing.</h2><p>Connect with developers and hardware enthusiasts.</p><strong>Join on Discord ↗</strong></a><a class="contact-card" href="https://wiki.seeedstudio.com/meshtastic_introduction/" target="_blank" rel="noopener noreferrer"><span class="resource-num">04 / LEARN MORE</span><h2>Meet Meshtastic.</h2><p>Discover off-grid communication and Seeed's Mesh hardware.</p><strong>Explore Meshtastic ↗</strong></a></div>
+
+    <section class="shell hub-section" id="contact" aria-labelledby="contact-title">
+      <div class="section-head"><div><h2 id="contact-title">Contact Us</h2></div></div>
+      <div class="contact-grid">
+        <a class="contact-card" href="mailto:sensecap@seeed.cc"><span>Technical Support</span><strong>sensecap@seeed.cc</strong></a>
+        <a class="contact-card" href="https://www.facebook.com/groups/1755190828846458" target="_blank" rel="noopener noreferrer"><span>LoRa &amp; Mesh Community</span><strong>Join on Facebook <span aria-hidden="true">↗</span></strong></a>
+        <a class="contact-card" href="https://discord.gg/mQfW9Vj88z" target="_blank" rel="noopener noreferrer"><span>Seeed Studio Discord</span><strong>Join on Discord <span aria-hidden="true">↗</span></strong></a>
+        <a class="contact-card" href="https://www.seeedstudio.com/meshtastic-products" target="_blank" rel="noopener noreferrer"><span>Learn More</span><strong>Meshtastic <span aria-hidden="true">↗</span></strong></a>
+      </div>
     </section>
   </main>
-  <footer class="shell"><div><strong>MESH LAB</strong><p>Small devices. Shared possibilities.</p></div><p>A community-curated collection. Projects and images belong to their creators.<br>An independent index of Seeed hardware projects.</p><div class="footer-social"><a href="mailto:sensecap@seeed.cc">Email ↗</a><a href="https://www.facebook.com/groups/1755190828846458" target="_blank" rel="noopener noreferrer">Facebook ↗</a><a href="https://discord.gg/eWkprNDMU7" target="_blank" rel="noopener noreferrer">Discord ↗</a><a href="https://github.com/hack-embed/seeed-meshtastic-projects" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div></footer>
+  <footer class="site-footer"><div class="shell footer-inner"><img src="./assets/seeed-logo.png" alt="Seeed Studio" width="118" height="13"><p>LoRa Mesh Lab. Projects and images belong to their creators.</p></div></footer>
   <dialog id="detail" aria-labelledby="detail-title"><button class="dialog-close" data-close aria-label="Close project details">×</button><div id="detail-content"></div></dialog>
   <div id="toast" role="status" class="toast" hidden></div>
-  <noscript><div class="noscript">Enable JavaScript to browse Mesh Lab. You can also <a href="./data/projects.json">view the project catalog</a> or <a href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml">submit a project on GitHub</a>.</div></noscript>
+  <noscript><div class="noscript">Enable JavaScript to browse LoRa Mesh Lab. You can also <a href="./data/projects.json">view the project catalog</a> or <a href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml">submit a project on GitHub</a>.</div></noscript>
 </body>
 </html>

@@ -19,9 +19,9 @@ const ICON_PATHS = {
   'Intelligent System': 'M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-2Zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1',
   'Others': 'm12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z',
 };
-const icon = (name) => `<svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name] || ICON_PATHS.Others}"/></svg>`;
+const icon = (name) => `<svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name] || ICON_PATHS.Others}"/></svg>`;
 const params = new URLSearchParams(location.search);
-let projects = [], engagement = {}, activeProject = null;
+let projects = [], engagement = {}, activeProject = null, device = 'all', sort = 'newest';
 let category = CATEGORIES.includes(params.get('category')) ? params.get('category') : 'all';
 
 function readStorage(key, initial) {
@@ -52,8 +52,8 @@ function notify(message) {
 function setFiltersFromUrl() {
   const current = new URLSearchParams(location.search);
   $('search').value = current.get('q') || '';
-  $('device').value = PRODUCTS.includes(current.get('device')) ? current.get('device') : 'all';
-  $('sort').value = ['newest', 'oldest', 'likes'].includes(current.get('sort')) ? current.get('sort') : 'newest';
+  device = PRODUCTS.includes(current.get('device')) ? current.get('device') : 'all';
+  sort = current.get('sort') === 'likes' ? 'likes' : 'newest';
   category = CATEGORIES.includes(current.get('category')) ? current.get('category') : 'all';
 }
 function syncUrl() {
@@ -61,19 +61,20 @@ function syncUrl() {
   for (const key of ['q', 'category', 'device', 'sort']) url.searchParams.delete(key);
   if ($('search').value.trim()) url.searchParams.set('q', $('search').value.trim());
   if (category !== 'all') url.searchParams.set('category', category);
-  if ($('device').value !== 'all') url.searchParams.set('device', $('device').value);
-  if ($('sort').value !== 'newest') url.searchParams.set('sort', $('sort').value);
+  if (device !== 'all') url.searchParams.set('device', device);
+  if (sort !== 'newest') url.searchParams.set('sort', sort);
   history.replaceState(null, '', url);
 }
 function render() {
   const words = $('search').value.trim().split(/\s+/).filter(Boolean).map(normalize);
-  const result = projects.filter(p => (category === 'all' || p.categories.includes(category)) && ($('device').value === 'all' || p.products.includes($('device').value)) && words.every(word => normalize([p.title,p.description,p.author,...p.categories,...p.devices,...p.products,...p.tags].join(' ')).includes(word)));
-  const sort = $('sort').value;
-  result.sort((a,b) => (sort === 'likes' ? stats(b).hearts - stats(a).hearts : 0) || (sort === 'oldest' ? a.addedAt.localeCompare(b.addedAt) : b.addedAt.localeCompare(a.addedAt)));
-  $('categories').innerHTML = ['all', ...CATEGORIES].map(name => `<button class="tab" type="button" data-category="${escapeHtml(name)}" aria-pressed="${name === category}">${icon(name)}<span>${name === 'all' ? 'All Projects' : escapeHtml(name)}</span></button>`).join('');
+  const result = projects.filter(p => (category === 'all' || p.categories.includes(category)) && (device === 'all' || p.products.includes(device)) && words.every(word => normalize([p.title,p.description,p.author,...p.categories,...p.devices,...p.products,...p.tags].join(' ')).includes(word)));
+  result.sort((a,b) => (sort === 'likes' ? stats(b).hearts - stats(a).hearts : 0) || b.addedAt.localeCompare(a.addedAt));
+  $('categories').innerHTML = ['all', ...CATEGORIES].map(name => `<button class="tab" type="button" data-category="${escapeHtml(name)}" aria-pressed="${name === category}">${icon(name)}<span>${name === 'all' ? 'All categories' : escapeHtml(name)}</span></button>`).join('');
+  $('devices').innerHTML = ['all', ...PRODUCTS].map(name => `<button class="chip" type="button" data-device="${escapeHtml(name)}" aria-pressed="${name === device}">${name === 'all' ? 'All devices' : escapeHtml(name)}</button>`).join('');
+  $('sort').querySelectorAll('[data-sort]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sort === sort)));
   $('result-count').textContent = `${result.length} project${result.length === 1 ? '' : 's'} to explore`;
   $('empty').hidden = result.length > 0 || !$('load-error').hidden;
-  $('project-grid').innerHTML = result.map(p => `<article class="project-card"><div class="card-cover"><button type="button" class="cover-button" data-detail="${p.id}" aria-label="View ${escapeHtml(p.title)}">${safeUrl(p.image) ? `<img data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async">` : fallback}</button><div class="cover-tags"><span>${escapeHtml(p.categories[0])}</span>${p.products.map(product => `<span>${escapeHtml(product)}</span>`).join('')}</div></div><div class="card-body"><span class="card-category">${escapeHtml(p.tags[0] || 'COMMUNITY BUILD')}</span><h3><button class="card-title" data-detail="${p.id}" type="button">${escapeHtml(p.title)}</button></h3><p class="card-description">${escapeHtml(p.description)}</p><div class="card-meta"><span aria-label="${stats(p).hearts} hearts">${likes.has(p.id) ? '♥' : '♡'} ${stats(p).hearts}</span><time datetime="${p.addedAt}" title="Added to Mesh Lab">${dateLabel(p.addedAt)}</time></div><div class="card-bottom"><span class="author" title="${escapeHtml(p.author)}">by ${escapeHtml(p.author)}</span><button class="view-project" type="button" data-detail="${p.id}">View Project ↗</button></div></div></article>`).join('');
+  $('project-grid').innerHTML = result.map(p => `<article class="project-card"><div class="card-cover"><button type="button" class="cover-button" data-detail="${p.id}" tabindex="-1" aria-hidden="true">${safeUrl(p.image) ? `<img data-cover src="${escapeHtml(safeUrl(p.image))}" alt="" loading="lazy" decoding="async">` : fallback}</button><div class="cover-tags">${p.categories.map(c => `<span class="tag-category">${escapeHtml(c)}</span>`).join('')}${p.products.map(product => `<span>${escapeHtml(product)}</span>`).join('')}</div></div><div class="card-body"><h3><button class="card-title" data-detail="${p.id}" type="button">${escapeHtml(p.title)}</button></h3><p class="card-description">${escapeHtml(p.description)}</p><div class="card-bottom"><span class="card-meta"><span class="hearts" aria-label="${stats(p).hearts} hearts">${likes.has(p.id) ? '♥' : '♡'} ${stats(p).hearts}</span><time datetime="${p.addedAt}">${dateLabel(p.addedAt)}</time></span><button class="view-project" type="button" data-detail="${p.id}">View Project ↗</button></div></div></article>`).join('');
   attachImageFallbacks($('project-grid'));
 }
 function discussionUrl(p) {
@@ -87,7 +88,7 @@ function discussionUrl(p) {
 function detailHtml(p) {
   const s = stats(p);
   const activity = ACTIVITIES.find(a => a.id === p.activity);
-  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}<h3>Resources &amp; Links</h3><ul class="detail-resources">${p.resources.map(r => `<li>${link(r.url,r.label)}</li>`).join('')}</ul><h3>Related Activity</h3><p>${activity ? (activity.id === 'l2-pro' ? `<a class="text-link" href="./l2.html">${escapeHtml(activity.title)} →</a>` : activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'Independent community project'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><p class="engagement-note">Likes and shares you add here are saved in this browser. Comments open on GitHub and require sign-in. Published GitHub heart and comment counts update periodically.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
+  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}<h3>Resources &amp; Links</h3><ul class="detail-resources">${p.resources.map(r => `<li>${link(r.url,r.label)}</li>`).join('')}</ul><h3>Related Activity</h3><p>${activity ? (activity.id === 'l2-pro' ? `<a class="text-link" href="./l2.html">${escapeHtml(activity.title)} →</a>` : activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'None'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><p class="engagement-note">Likes and shares you add here are saved in this browser. Comments open on GitHub and require sign-in. Published GitHub heart and comment counts update periodically.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
 }
 function showDetail(id) {
   const p = projects.find(item => item.id === id); if (!p) return;
@@ -135,7 +136,6 @@ async function loadProjects() {
   try {
     const response = await fetch('./data/projects.json'); if (!response.ok) throw new Error('Catalog unavailable');
     projects = await response.json(); if (!Array.isArray(projects)) throw new Error('Invalid catalog');
-    $('catalog-stats').textContent = `${projects.length} PROJECTS / A WORLD OF POSSIBILITIES`;
     render(); route(false);
     void (async () => { try { const r = await fetch('./data/engagement.json'); if (r.ok) { engagement = (await r.json()).projects || {}; render(); if (activeProject && $('detail').open) showDetail(activeProject); } } catch { /* The catalog works without engagement snapshots. */ } })();
   } catch {
@@ -155,9 +155,11 @@ async function shareProject(p) {
     }
   }
 }
-$('device').innerHTML += PRODUCTS.map(p => `<option>${escapeHtml(p)}</option>`).join('');
 setFiltersFromUrl();
-for (const id of ['search','device','sort']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { render(); syncUrl(); });
+$('search').addEventListener('input', () => { render(); syncUrl(); });
+$('devices').addEventListener('click', event => { const button = event.target.closest('[data-device]'); if (button) { device = button.dataset.device; render(); syncUrl(); $('devices').querySelector(`[data-device="${CSS.escape(device)}"]`).focus({preventScroll:true}); } });
+$('sort').addEventListener('click', event => { const button = event.target.closest('[data-sort]'); if (button) { sort = button.dataset.sort; render(); syncUrl(); } });
+$('tabs-next').addEventListener('click', () => $('categories').scrollBy({left: $('categories').clientWidth * 0.7, behavior: 'smooth'}));
 $('categories').addEventListener('click', event => { const button = event.target.closest('[data-category]'); if (button) { category = button.dataset.category; render(); syncUrl(); $('categories').querySelector(`[data-category="${CSS.escape(category)}"]`).focus({preventScroll:true}); } });
 $('project-grid').addEventListener('click', event => { const button = event.target.closest('[data-detail]'); if (button) openProject(button.dataset.detail); });
 $('detail-content').addEventListener('click', event => {
@@ -175,7 +177,7 @@ $('detail').querySelector('[data-close]').addEventListener('click', dismissDetai
 $('detail').addEventListener('cancel', event => { event.preventDefault(); dismissDetail(); });
 $('detail').addEventListener('close', closeDetailRoute);
 $('detail').addEventListener('click', event => { const r = $('detail').getBoundingClientRect(); if (event.target === $('detail') && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) dismissDetail(); });
-$('reset').addEventListener('click', () => { category = 'all'; $('device').value = 'all'; $('search').value = ''; $('sort').value = 'newest'; render(); syncUrl(); });
+$('reset').addEventListener('click', () => { category = 'all'; device = 'all'; $('search').value = ''; sort = 'newest'; render(); syncUrl(); });
 $('retry').addEventListener('click',loadProjects);
 $('menu-toggle').addEventListener('click', () => { const open = $('main-nav').classList.toggle('is-open'); $('menu-toggle').setAttribute('aria-expanded', String(open)); });
 window.addEventListener('hashchange', () => route());

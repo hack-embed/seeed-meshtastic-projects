@@ -3,13 +3,13 @@ test('catalog filtering, local hearts, sorting, deep links and history',async({p
   const errors=[]; page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/#projects'); await expect(page.locator('.project-card')).toHaveCount(15);
   await page.getByRole('button',{name:'Firmware',exact:true}).click(); await expect(page.locator('.project-card')).toHaveCount(1);
-  await page.locator('#device').selectOption('Wio Tracker L2 Pro'); await expect(page.locator('#empty')).toBeVisible();
+  await page.locator('[data-device="Wio Tracker L2 Pro"]').click(); await expect(page.locator('#empty')).toBeVisible();
   await page.getByRole('button',{name:'Clear filters'}).click();
   await page.locator('#search').fill('skysense'); await expect(page.locator('.project-card')).toHaveCount(1);
   await page.getByRole('button',{name:'View Project ↗',exact:true}).click(); await expect(page.getByRole('dialog')).toBeVisible();
   for (const name of ['Project Description','Products Used','Setup Instructions','Resources & Links','Related Activity']) await expect(page.getByRole('heading',{name,exact:true})).toBeVisible();
   await page.locator('#detail-like').click(); await expect(page.locator('#detail-like')).toHaveAttribute('aria-pressed','true');
-  await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).toBeHidden(); await expect(page).not.toHaveURL(/project=/); await page.locator('#search').fill(''); await page.locator('#sort').selectOption('likes');
+  await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).toBeHidden(); await expect(page).not.toHaveURL(/project=/); await page.locator('#search').fill(''); await page.locator('[data-sort=likes]').click();
   await expect(page.locator('.project-card').first()).toContainText('SkySense');
   await page.reload(); await expect(page.locator('.project-card').first()).toContainText('SkySense');
   await page.locator('.project-card').first().getByRole('button',{name:'View Project ↗',exact:true}).click();

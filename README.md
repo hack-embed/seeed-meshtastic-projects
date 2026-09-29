@@ -69,7 +69,7 @@ The 15 curated entries include all 10 enclosure projects from the supplied Wio T
 
 ## L2 Pro activity
 
-`docs/l2.html` is the dedicated dark activity page. Home, Project Hub, and Community Activities link to it. It includes build/share rewards, platform milestones, illustrated participation steps, build ideas, documentation, FAQ, and a decorative interactive mesh background. Motion can be paused and automatically stops for reduced-motion preferences or while the hero/tab is hidden.
+`docs/l2.html` is the dedicated dark activity page. Home, Project Hub, and Community Activities link to it. It includes build/share rewards, platform milestones, three participation steps, build ideas, documentation, FAQ, and a decorative interactive mesh background. Motion automatically stops for reduced-motion preferences or while the hero/tab is hidden.
 
 The activity's Submit a Project buttons open the shared form from `docs/partials/project-form.html`, initialized by `docs/project-form.js`. Wio Tracker L2 Pro and its activity are preselected. Optional public GitHub repository import reads the description and detected license without overwriting fields already filled out. No access token is requested or stored.
 
@@ -77,7 +77,7 @@ Submit Your Link opens a separate social reward review form. It checks supported
 
 Purchase buttons are deliberately disabled with Coming Soon text, as requested. Set `purchaseUrl` in `docs/l2-config.js` to enable both buttons. The activity Wiki and contact email are configured there. No deadline, coupon expiration, dispatch time, or merchandise contents have been invented.
 
-The local product cutout `docs/assets/l2-pro.webp` was cropped from the official Seeed Wiki photo at `https://files.seeedstudio.com/wiki/SenseCAP/Wio_Tracker_L2/L2First.png`. Concept panels are labeled as ideas; they do not imply those apps run on the pictured device. Step illustrations are original SVG line art.
+The local product cutout `docs/assets/l2-pro.webp` was cropped from the official Seeed Wiki photo at `https://files.seeedstudio.com/wiki/SenseCAP/Wio_Tracker_L2/L2First.png`. Step images live in `docs/assets/l2-steps/`; the screen tiles in `docs/assets/l2-screens/tile/` are resized copies of the provided L2 screenshots. Shared styles are in `docs/base.css`; the hub uses `docs/hub.css` and the activity page `docs/l2.css`.
 
 ## GitHub Pages
 

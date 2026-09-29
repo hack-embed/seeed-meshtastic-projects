@@ -8,7 +8,7 @@ export const PRODUCTS = [
 ];
 export const ACTIVITIES = [
   { id: 'l2-pro', title: 'Build With Wio Tracker L2 Pro', url: './l2.html' },
-  { id: 'build-off-2026', title: 'Meshtastic Build-Off 2026', url: 'https://www.seeedstudio.com/meshtastic-build-off' },
+  { id: 'build-off-2026', title: 'Meshtastic Build-Off 2026', url: 'https://www.seeedstudio.com/meshtastic-build-off?srsltid=AU7gw4Xp6hmSdlyYyfUc8gtR6BqHPHL6fznKIV_KAC1SFopYo-wEnpZ2' },
   { id: 'design-2025', title: 'Meshtastic Device Design Challenge', url: 'https://www.hackster.io/contests/SeeedMeshtasticDeviceDesign2025' },
 ];
 export const REPO = 'hack-embed/seeed-meshtastic-projects';

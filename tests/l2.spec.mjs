@@ -1,11 +1,9 @@
 import { test,expect } from '@playwright/test';
-test('L2 campaign form, concept controls, rewards and private social submission',async({page})=>{
+test('L2 campaign form, rewards and private social submission',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/l2.html');
- await expect(page.getByRole('heading',{name:'Build with Wio Tracker L2 Pro.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Build with Wio Tracker L2 Pro'})).toBeVisible();
  await expect(page.locator('[data-purchase]').first()).toBeDisabled();
- await page.locator('[data-concept=ui]').click();await expect(page.locator('#concept-preview')).toContainText('Your screen. Your rules.');
- await page.locator('#motion-toggle').click();await expect(page.locator('#motion-toggle')).toHaveAttribute('aria-pressed','true');
  await page.locator('[data-open-project]').first().click();await expect(page.locator('#l2-submit-dialog')).toBeVisible();
  await expect(page.locator('[name=hardware][value="Wio Tracker L2 Pro"]')).toBeChecked();
  await expect(page.locator('#related-activity')).toHaveValue('l2-pro');await expect(page.locator('#social-field')).toBeVisible();
@@ -27,7 +25,7 @@ test('L2 responsive layout and reduced motion',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:1050});await page.goto('/l2.html');
-  await expect(page.locator('#motion-toggle')).toBeDisabled();
+  await expect(page.locator('.steps li')).toHaveCount(3);await expect(page.locator('.milestones tbody tr')).toHaveCount(4);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   expect(await page.locator('body').innerText()).not.toMatch(/[\u3400-\u9fff]/);
   await page.screenshot({path:`test-results/l2-${width}.png`,fullPage:true});
