@@ -141,7 +141,7 @@ async function loadProjects() {
     const response = await fetch('./data/projects.json'); if (!response.ok) throw new Error('Catalog unavailable');
     projects = await response.json(); if (!Array.isArray(projects)) throw new Error('Invalid catalog');
     render(); route(false);
-    void (async () => { try { const r = await fetch('./data/engagement.json'); if (r.ok) { engagement = (await r.json()).projects || {}; render(); if (activeProject && $('detail').open) showDetail(activeProject); } } catch { /* The catalog works without engagement snapshots. */ } })();
+    void (async () => { try { const r = await fetch('./data/engagement.json', { cache: 'no-cache' }); if (r.ok) { engagement = (await r.json()).projects || {}; render(); if (activeProject && $('detail').open) showDetail(activeProject); } } catch { /* The catalog works without engagement snapshots. */ } })();
   } catch {
     $('load-error').hidden = false; $('empty').hidden = true; $('result-count').textContent = 'Projects are unavailable';
   }
