@@ -9,6 +9,17 @@ const normalize = (value) => value.toLowerCase().replace(/[\s_\-–]+/g, '');
 const link = (url, label, cls = '') => safeUrl(url) ? `<a class="${cls}" href="${escapeHtml(safeUrl(url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>` : '';
 const fallback = '<div class="fallback-cover"><span aria-hidden="true">⌁</span><span>MADE FOR THE MESH</span></div>';
 const dateLabel = (date) => new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
+const ICON_PATHS = {
+  all: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
+  '3D Prints & Enclosures': 'm12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10 9-5M3 8l9 5v9',
+  'Firmware': 'm8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18',
+  'Hardware': 'M6 6h12v12H6zM9 1v5m6-5v5M9 18v5m6-5v5M1 9h5m-5 6h5m12-6h5m-5 6h5',
+  'APP': 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 16h2',
+  'Integrations': 'M9 17H7A5 5 0 0 1 7 7h2m6 0h2a5 5 0 0 1 0 10h-2m-7-5h8',
+  'Intelligent System': 'M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-2Zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1',
+  'Others': 'm12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z',
+};
+const icon = (name) => `<svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name] || ICON_PATHS.Others}"/></svg>`;
 const params = new URLSearchParams(location.search);
 let projects = [], engagement = {}, activeProject = null;
 let category = CATEGORIES.includes(params.get('category')) ? params.get('category') : 'all';
@@ -59,7 +70,7 @@ function render() {
   const result = projects.filter(p => (category === 'all' || p.categories.includes(category)) && ($('device').value === 'all' || p.products.includes($('device').value)) && words.every(word => normalize([p.title,p.description,p.author,...p.categories,...p.devices,...p.products,...p.tags].join(' ')).includes(word)));
   const sort = $('sort').value;
   result.sort((a,b) => (sort === 'likes' ? stats(b).hearts - stats(a).hearts : 0) || (sort === 'oldest' ? a.addedAt.localeCompare(b.addedAt) : b.addedAt.localeCompare(a.addedAt)));
-  $('categories').innerHTML = ['all', ...CATEGORIES].map(name => `<button class="tab" type="button" data-category="${escapeHtml(name)}" aria-pressed="${name === category}">${name === 'all' ? 'All Projects' : escapeHtml(name)}</button>`).join('');
+  $('categories').innerHTML = ['all', ...CATEGORIES].map(name => `<button class="tab" type="button" data-category="${escapeHtml(name)}" aria-pressed="${name === category}">${icon(name)}<span>${name === 'all' ? 'All Projects' : escapeHtml(name)}</span></button>`).join('');
   $('result-count').textContent = `${result.length} project${result.length === 1 ? '' : 's'} to explore`;
   $('empty').hidden = result.length > 0 || !$('load-error').hidden;
   $('project-grid').innerHTML = result.map(p => `<article class="project-card"><div class="card-cover"><button type="button" class="cover-button" data-detail="${p.id}" aria-label="View ${escapeHtml(p.title)}">${safeUrl(p.image) ? `<img data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async">` : fallback}</button><div class="cover-tags"><span>${escapeHtml(p.categories[0])}</span>${p.products.map(product => `<span>${escapeHtml(product)}</span>`).join('')}</div></div><div class="card-body"><span class="card-category">${escapeHtml(p.tags[0] || 'COMMUNITY BUILD')}</span><h3><button class="card-title" data-detail="${p.id}" type="button">${escapeHtml(p.title)}</button></h3><p class="card-description">${escapeHtml(p.description)}</p><div class="card-meta"><span aria-label="${stats(p).hearts} hearts">${likes.has(p.id) ? '♥' : '♡'} ${stats(p).hearts}</span><time datetime="${p.addedAt}" title="Added to Mesh Lab">${dateLabel(p.addedAt)}</time></div><div class="card-bottom"><span class="author" title="${escapeHtml(p.author)}">by ${escapeHtml(p.author)}</span><button class="view-project" type="button" data-detail="${p.id}">View Project ↗</button></div></div></article>`).join('');

@@ -481,7 +481,7 @@
       "Intelligent System"
     ],
     "products": [
-      "Wio Tracker L1 Lite"
+      "Wio Tracker L1/E-ink"
     ],
     "devices": [
       "Wio Tracker L1 Lite"
@@ -534,9 +534,9 @@
       "Integrations"
     ],
     "products": [
-      "XIAO",
+      "XIAO ESP32S3 Kit",
       "Wio Tracker L1 Pro",
-      "SenseCAP T1000-E"
+      "T1000-E"
     ],
     "addedAt": "2026-09-24",
     "setup": [
@@ -572,7 +572,7 @@
       "Integrations"
     ],
     "products": [
-      "XIAO",
+      "XIAO ESP32S3 Kit",
       "Wio Tracker L1 Pro"
     ],
     "addedAt": "2026-09-24",
@@ -608,7 +608,7 @@
       "Integrations"
     ],
     "products": [
-      "XIAO nRF52840"
+      "XIAO nRF52840 Kit"
     ],
     "addedAt": "2026-09-24",
     "setup": [

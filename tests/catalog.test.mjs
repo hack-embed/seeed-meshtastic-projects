@@ -7,7 +7,7 @@ const fields = {
   'Project Title':'Example Mesh Build', 'Author / Maker':'A Maker',
   'Project Description':'A practical off-grid communication project using Seeed hardware.',
   'Project Cover Image':'https://example.com/cover.jpg',
-  'Hardware':'Wio Tracker L1 Pro, XIAO', 'Category':'Hardware, Integrations',
+  'Hardware':'Wio Tracker L1 Pro, XIAO ESP32S3 Kit', 'Category':'Hardware, Integrations',
   'Setup Instructions':'Connect the radio.\nConfigure your region.',
   'Resources & Links':'https://example.com/build\nhttps://github.com/example/project',
   'Related Activity':'No related activity', 'Social Links':'_No response_',
@@ -16,7 +16,7 @@ const fields = {
 function issue(overrides = {}) { return {number:42,body:Object.entries({...fields,...overrides}).map(([k,v])=>`### ${k}\n\n${v}\n\n`).join('')}; }
 test('GitHub form submission preserves multi-select values and optional fields',()=>{
   const p = parseSubmission(issue({'Setup Instructions':'_No response_'}),'2026-09-24');
-  assert.equal(p.id,'community-42'); assert.deepEqual(p.products,['Wio Tracker L1 Pro','XIAO']);
+  assert.equal(p.id,'community-42'); assert.deepEqual(p.products,['Wio Tracker L1 Pro','XIAO ESP32S3 Kit']);
   assert.deepEqual(p.categories,['Hardware','Integrations']); assert.deepEqual(p.setup,[]); assert.equal(p.activity,null);
   assert.equal(p.issueNumber,42); assert.equal(p.resources.length,2);
 });

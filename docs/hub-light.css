@@ -59,3 +59,5 @@ dialog { box-shadow:0 30px 100px #23342933; }
 @media(max-width:760px) {
   .header-inner nav { background:var(--paper); }
 }
+.tab { display:inline-flex; align-items:center; gap:7px; }
+.tab-icon { flex-shrink:0; }

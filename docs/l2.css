@@ -120,3 +120,14 @@
 }
 @media(max-width:400px) { .l2-hero h1 { font-size:58px; }.l2-hero-actions .button { font-size:11px; gap:12px; padding:13px 15px; }.concept-panel .overline { font-size:7px; letter-spacing:0; }.concept-tabs { top:12px; right:8px; }.concept-tabs button { padding:4px; font-size:9px; }.concept-screen { gap:12px; }.concept-screen strong { font-size:13px; }.l2-stage { height:525px; }.l2-product { height:390px; }.device-caption { top:401px; }.idea-card,.idea-community { padding:17px; }.reward-heading { gap:9px; }.reward-label { font-size:7px; }.merch-visual strong { font-size:27px; }.merch-visual { gap:15px; }.coupon-visual p span { display:block; margin:5px 0 0; } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; animation:none !important; } }
+/* Hero collage of L2 Pro running community-style projects */
+.l2-stage { overflow:hidden; }
+.l2-collage { position:absolute; inset:-40px -30px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; transform:rotate(-12deg); }
+.l2-shot { width:100%; height:auto; filter:drop-shadow(8px 18px 14px #0009); animation:l2-float 7s ease-in-out infinite alternate; }
+.shot-2,.shot-5 { margin-top:70px; animation-delay:-2.5s; }
+.shot-3,.shot-6 { margin-top:25px; animation-delay:-5s; }
+.l2-stage .device-caption { top:auto; bottom:18px; z-index:2; background:#101a0ecc; padding:6px 9px; border-radius:4px; }
+@keyframes l2-float { to { transform:translateY(-12px); } }
+@media(max-width:760px) { .l2-stage { height:460px; }.l2-collage { inset:-30px -50px; } }
+@media(max-width:400px) { .l2-stage { height:400px; } }
+@media(prefers-reduced-motion:reduce) { .l2-shot { animation:none; } }
