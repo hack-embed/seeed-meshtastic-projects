@@ -42,7 +42,12 @@ async function thread(issue, includeOpener) {
   }
   return items.slice(-20);
 }
-const stat = async (issue, includeOpener) => ({issueNumber:issue.number,hearts:issue.reactions?.heart || 0,comments:issue.comments || 0,thread:await thread(issue,includeOpener)});
+const stat = async (issue, includeOpener) => {
+  const items = await thread(issue,includeOpener);
+  // A message typed into the discussion opener counts as a comment too.
+  const opener = includeOpener && items[0]?.url === issue.html_url ? 1 : 0;
+  return {issueNumber:issue.number,hearts:issue.reactions?.heart || 0,comments:(issue.comments || 0) + opener,thread:items};
+};
 // The original submission is the canonical discussion for approved community projects.
 for (const p of projects.filter(p => p.issueNumber)) {
   const issue = await api(`issues/${p.issueNumber}`);
