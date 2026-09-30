@@ -1,5 +1,6 @@
 import { CATEGORIES, PRODUCTS, ACTIVITIES, REPO_URL } from './config.js';
 import { escapeHtml } from './form-utils.js';
+import { repoPath, extractProject } from './repo-import.js';
 const $ = id => document.getElementById(id);
 const safeUrl = value => {try {const u=new URL(value);return u.protocol==='https:' && !u.username && !u.password ? u.href : '';}catch{return '';}};
 let submissionBody = '';
@@ -52,21 +53,25 @@ $('copy-submission').addEventListener('click', async () => { try { await navigat
   updateActivity();
   let repositoryRequest = 0;
   $('import-repo').addEventListener('click', async () => {
-    const status=$('repo-import-status');let url;
-    try {url=new URL($('repository-url').value);if(url.protocol!=='https:' || url.hostname!=='github.com' || url.username || url.password || !/^\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(url.pathname))throw new Error();}
-    catch {status.textContent='Enter a public GitHub repository URL, such as https://github.com/owner/project.';return;}
-    const request=++repositoryRequest;const path=url.pathname.replace(/\/$/,'').replace(/\.git$/,'');
-    $('import-repo').disabled=true;status.textContent='Reading public repository details…';
+    const status=$('repo-import-status'), path=repoPath($('repository-url').value);
+    if(!path){status.textContent='Enter a public GitHub repository URL, such as https://github.com/owner/project.';return;}
+    const request=++repositoryRequest, api='https://api.github.com/repos'+path;
+    $('import-repo').disabled=true;status.textContent='Reading the repository and its README…';
     try {
-      const response=await fetch('https://api.github.com/repos'+path,{headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(12000)});
+      const response=await fetch(api,{headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(12000)});
       if(!response.ok)throw new Error(response.status===403 || response.status===429 ? 'GitHub is limiting requests. You can fill out the form manually.' : 'Repository unavailable. Check that it is public, or fill out the form manually.');
-      const repo=await response.json();if(request!==repositoryRequest)return;
-      const form=$('project-form');
-      if(!form.elements.title.value)form.elements.title.value=String(repo.name || '').slice(0,120);
-      if(!form.elements.description.value)form.elements.description.value=String(repo.description || '').slice(0,3000);
-      if(!form.elements.resources.value)form.elements.resources.value='https://github.com'+path;
-      const license=repo.license?.spdx_id && repo.license.spdx_id!=='NOASSERTION' ? repo.license.spdx_id : 'No recognized license';
-      status.textContent='Details imported. License: '+license+'. Existing fields were kept; review all information before submitting.';
+      const repo=await response.json();
+      // A missing README still leaves the repository metadata worth importing.
+      const readme=await fetch(api+'/readme',{headers:{Accept:'application/vnd.github.raw+json'},signal:AbortSignal.timeout(12000)}).then(r=>r.ok ? r.text() : '').catch(()=>'');
+      if(request!==repositoryRequest)return;
+      const data=extractProject(repo,readme,path), form=$('project-form'), filled=[];
+      const fill=(name,value,label)=>{if(value && !form.elements[name].value.trim()){form.elements[name].value=value;filled.push(label);}};
+      const check=(name,values,label)=>{const boxes=[...form.querySelectorAll(`[name="${name}"]`)];if(values.length && !boxes.some(b=>b.checked)){boxes.forEach(b=>{b.checked=values.includes(b.value);});filled.push(label);}};
+      fill('title',data.title,'title');fill('author',data.author,'maker');fill('description',data.description,'description');
+      fill('image',data.image,data.imageFromReadme ? 'cover image' : 'cover image (GitHub preview card)');
+      check('hardware',data.hardware,'hardware');check('categories',data.categories,'category');
+      fill('setup',data.setup.join('\n'),'setup steps');fill('resources',data.resources.join('\n'),'links');
+      status.textContent=`${filled.length ? 'Filled '+filled.join(', ')+'.' : 'No empty fields to fill.'} License: ${data.license}. ${readme ? '' : 'No README was found. '}Fields you had already filled were kept; review everything before submitting.`;
       $('submission-ready').hidden=true;
     } catch(error) {status.textContent=error.name==='TimeoutError' ? 'GitHub took too long to respond. Try again or fill out the form manually.' : error.message || 'Import unavailable. You can still fill out the form manually.';}
     finally {$('import-repo').disabled=false;}

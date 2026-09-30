@@ -34,7 +34,9 @@ test('L2 responsive layout and reduced motion',async({page})=>{
 test('Hub links to activity and repository import keeps user edits',async({page})=>{
  await page.goto('/#projects');await expect(page.locator('#home .campaign-banner')).toHaveAttribute('href','./l2.html');
  await page.goto('/?activity=l2-pro#submit');await expect(page.locator('#related-activity')).toHaveValue('l2-pro');
- await page.route('https://api.github.com/repos/example/build',route=>route.fulfill({json:{name:'Repo build',description:'A useful imported project description for L2 Pro.',license:{spdx_id:'MIT'}}}));
+ await page.route('https://api.github.com/repos/example/build',route=>route.fulfill({json:{name:'Repo build',description:'A useful imported project description for L2 Pro.',owner:{login:'example'},license:{spdx_id:'MIT'}}}));
+ await page.route('https://api.github.com/repos/example/build/readme',route=>route.fulfill({body:'# Repo build\n\n![Photo](https://example.com/photo.jpg)\n\n## Installation\n\n1. Flash the firmware.\n2. Pair the Wio Tracker L2 Pro.\n'}));
  await page.locator('[name=title]').fill('My edited title');await page.locator('#repository-url').fill('https://github.com/example/build');await page.locator('#import-repo').click();
  await expect(page.locator('#repo-import-status')).toContainText('MIT');await expect(page.locator('[name=title]')).toHaveValue('My edited title');await expect(page.locator('textarea[name=description]')).toHaveValue(/imported/);
+ await expect(page.locator('[name=image]')).toHaveValue('https://example.com/photo.jpg');await expect(page.locator('textarea[name=setup]')).toHaveValue('Flash the firmware.\nPair the Wio Tracker L2 Pro.');await expect(page.locator('[name=author]')).toHaveValue('example');
 });
