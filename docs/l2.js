@@ -37,6 +37,21 @@ $('share-form').addEventListener('submit',event=>{
   if(email)$('share-private-email').href=`mailto:${L2.contact}?subject=${encodeURIComponent('L2 Pro Share Reward contact')}&body=${encodeURIComponent(`Approved project: ${form.get('project')}\nPublic post: ${form.get('post')}\nReward contact email: ${email}\n\nPlease use this address only for activity reward follow-up.`)}`;
   $('share-github').focus();
 });
+// Each idea shows a real example: L2 Pro submissions first, then other catalog projects until L2 builds arrive.
+const coverUrl=value=>{try{const u=new URL(value);return u.protocol==='https:' && !u.username && !u.password ? u.href : '';}catch{return '';}};
+const examplePool=projects=>projects.filter(p=>coverUrl(p.image)).sort((a,b)=>Number(b.activity===L2.activity)-Number(a.activity===L2.activity) || b.addedAt.localeCompare(a.addedAt));
+function renderExamples(projects) {
+  const pool=examplePool(projects), used=new Set();
+  for(const card of document.querySelectorAll('[data-idea]')) {
+    const match=pool.find(p=>p.categories.includes(card.dataset.idea) && !used.has(p.id)) || pool.find(p=>p.categories.includes(card.dataset.idea));
+    const example=document.createElement(match ? 'a' : 'button');example.className='idea-example';
+    if(match){used.add(match.id);example.href=`./?project=${encodeURIComponent(match.id)}#projects`;const img=new Image();img.src=coverUrl(match.image);img.alt='';img.loading='lazy';img.decoding='async';const caption=document.createElement('span');caption.textContent=`Example · ${match.title}`;example.append(img,caption);}
+    else{example.type='button';example.dataset.openProject='';example.innerHTML='<span class="idea-empty">Your build could be the first example here.</span>';example.addEventListener('click',()=>document.querySelector('.hero-actions [data-open-project]').click());}
+    card.append(example);
+  }
+  $('community-demos').replaceChildren(...pool.slice(0,3).map(p=>{const img=new Image();img.src=coverUrl(p.image);img.alt='';img.loading='lazy';img.decoding='async';return img;}));
+}
+fetch('./data/projects.json').then(r=>r.ok ? r.json() : []).then(renderExamples).catch(()=>{ /* Idea cards still read well without examples. */ });
 // A decorative network, bounded in size and paused when hidden or motion is reduced.
 const canvas=$('mesh-background'),ctx=canvas.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let width=0,height=0,points=[],frame=0,last=0,paused=reduce.matches,inView=true;

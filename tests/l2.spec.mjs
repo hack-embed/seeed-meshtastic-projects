@@ -40,3 +40,17 @@ test('Hub links to activity and repository import keeps user edits',async({page}
  await expect(page.locator('#repo-import-status')).toContainText('MIT');await expect(page.locator('[name=title]')).toHaveValue('My edited title');await expect(page.locator('textarea[name=description]')).toHaveValue(/imported/);
  await expect(page.locator('[name=image]')).toHaveValue('https://example.com/photo.jpg');await expect(page.locator('textarea[name=setup]')).toHaveValue('Flash the firmware.\nPair the Wio Tracker L2 Pro.');await expect(page.locator('[name=author]')).toHaveValue('example');
 });
+test('idea cards show catalog examples and invite the first build where none exist',async({page})=>{
+ await page.route('**/data/projects.json',route=>route.fulfill({json:[
+  {id:'case-a',title:'L2 Case',categories:['3D Prints & Enclosures'],image:'https://example.com/a.png',activity:'l2-pro',addedAt:'2026-01-01'},
+  {id:'case-b',title:'Newer Case',categories:['3D Prints & Enclosures','Firmware'],image:'https://example.com/b.png',activity:null,addedAt:'2026-06-01'},
+  {id:'unsafe',title:'Unsafe',categories:['APP'],image:'javascript:alert(1)',activity:null,addedAt:'2026-07-01'},
+ ]}));
+ await page.goto('/l2.html#ideas');
+ const card=name=>page.locator(`[data-idea="${name}"] .idea-example`);
+ await expect(card('3D Prints & Enclosures')).toContainText('L2 Case');await expect(card('3D Prints & Enclosures')).toHaveAttribute('href','./?project=case-a#projects');
+ await expect(card('Firmware')).toContainText('Newer Case');
+ await expect(card('APP')).toContainText('first example');await expect(page.locator('[data-idea="APP"] img')).toHaveCount(0);
+ await card('Others').click();await expect(page.locator('#l2-submit-dialog')).toBeVisible();
+ await expect(page.locator('#community-demos img')).toHaveCount(2);
+});
