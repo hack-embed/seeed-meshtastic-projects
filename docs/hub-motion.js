@@ -1,8 +1,19 @@
 // Decorative demo screens. These illustrations are independent of catalog projects.
 export function initHubMotion() {
-  const screens = [...document.querySelectorAll('[data-demo]')].map(canvas => ({canvas, ctx: canvas.getContext('2d')}));
   const button = document.getElementById('hub-motion');
   const banner = document.querySelector('.campaign-banner');
+  const track = banner.querySelector('.banner-track');
+  const group = track.querySelector('.banner-group');
+  // Three equal groups keep the rotated viewport covered throughout the loop.
+  // Start at the middle group so the loop always has a leading and trailing copy.
+  track.append(group.cloneNode(true), group.cloneNode(true));
+  track.classList.add('is-loop-ready');
+  const screensByMode = new Map();
+  for (const canvas of banner.querySelectorAll('[data-demo]')) {
+    const mode = canvas.dataset.demo;
+    if (!screensByMode.has(mode)) screensByMode.set(mode, []);
+    screensByMode.get(mode).push({canvas, ctx: canvas.getContext('2d')});
+  }
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = false, visible = true, frame = 0, last = 0, tick = 0;
   function draw({canvas, ctx: c}, time) {
@@ -10,7 +21,7 @@ export function initHubMotion() {
     const mode = canvas.dataset.demo;
     const light = ['dinosaur', 'gps'].includes(mode);
     c.fillStyle = light ? '#dce7dc' : '#102528'; c.fillRect(0,0,360,270);
-    c.fillStyle = light ? '#425f42' : '#bbdea6'; c.font = '14px monospace';
+    c.fillStyle = light ? '#425f42' : '#bbdea6'; c.font = '24px monospace';
     c.fillText(({dinosaur:'Dinosaur',dashboard:'Mesh console',blocks:'Block stack',gps:'GPS radar'})[mode], 12, 24);
     c.fillText('▮▮▮', 306, 24);
     c.strokeStyle = light ? '#9ab399' : '#284d4c'; c.beginPath(); c.moveTo(0,35); c.lineTo(360,35); c.stroke();
@@ -24,12 +35,13 @@ export function initHubMotion() {
         c.fillStyle = w === 3 ? '#dce7dc' : '#548142';c.fillRect(66+x,178+y-jump,w,h);
       }
       c.fillStyle='#769952';c.fillRect(obstacle,193,9,31);c.fillRect(obstacle-6,200,6,8);
-      c.fillText('A little hardware. A new high score.',13,255);
+      c.fillText('DINO RUN · HIGH SCORE',13,255);
     } else if (mode === 'dashboard') {
-      c.fillStyle='#e6f1e3';c.font='17px monospace';c.fillText('Hello, maker_',14,64);
-      c.fillStyle='#8cc7ad';c.font='14px monospace';
-      ['LoRa radio      online','Nearby nodes    07','Battery         92%','Build something new.'].forEach((line,i)=>c.fillText(line,14,98+i*26));
-      c.fillStyle='#a6e04a';c.fillRect(14,231,130,25);c.fillStyle='#102528';c.fillText('OPEN APPS',26,248);
+      c.fillStyle='#e6f1e3';c.font='28px monospace';c.fillText('Hello, maker_',14,67);
+      c.fillStyle='#8cc7ad';c.font='26px monospace';
+      ['Radio    online','Nodes    07','Battery  92%','Ready to build.'].forEach((line,i)=>c.fillText(line,14,102+i*28));
+      c.font='24px monospace';
+      c.fillStyle='#a6e04a';c.fillRect(14,231,156,25);c.fillStyle='#102528';c.fillText('OPEN APPS',26,250);
       if (Math.floor(time*2)%2 === 0) {c.fillStyle='#d7edb4';c.fillRect(14,207,8,14);}
     } else if (mode === 'blocks') {
       c.strokeStyle='#21403f';
@@ -43,11 +55,20 @@ export function initHubMotion() {
       c.beginPath();c.moveTo(75,151);c.lineTo(285,151);c.moveTo(180,46);c.lineTo(180,256);c.stroke();
       const angle=time*.6;c.strokeStyle='#5d8e42';c.lineWidth=2;c.beginPath();c.moveTo(180,151);c.lineTo(180+95*Math.cos(angle),151+95*Math.sin(angle));c.stroke();c.lineWidth=1;
       c.fillStyle='#577e3b';[[147,109],[208,170],[122,190],[225,95]].forEach(([x,y])=>{c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();});
-      c.font='13px monospace';c.fillText('SAT 08',12,59);c.fillText('GPS FIX',12,254);
+      c.font='24px monospace';c.fillText('SAT 08',12,64);c.fillText('GPS FIX',12,254);
+    }
+  }
+  function drawScreens(time) {
+    let phase = 0;
+    for (const copies of screensByMode.values()) {
+      const source = copies[0];
+      draw(source, time + phase++ * 1.8);
+      // Every copy of a demo shows the same frame, including at the loop seam.
+      for (const copy of copies.slice(1)) copy.ctx?.drawImage(source.canvas, 0, 0);
     }
   }
   function animate(now) {
-    if (now-last>=100) {tick += Math.min((now-last)/1000,.15); screens.forEach((s,i)=>draw(s,tick+i*1.8));last=now;}
+    if (now-last>=100) {tick += Math.min((now-last)/1000,.15); drawScreens(tick);last=now;}
     frame=requestAnimationFrame(animate);
   }
   function sync() {
@@ -59,7 +80,7 @@ export function initHubMotion() {
     button.textContent=reduce.matches?'Reduced motion':paused?'Resume motion ▷':'Pause motion Ⅱ';
     if(!stopped&&visible){last=performance.now();frame=requestAnimationFrame(animate);}
   }
-  screens.forEach((s,i)=>draw(s,i*1.8));
+  drawScreens(0);
   button.addEventListener('click',()=>{paused=!paused;sync();});
   reduce.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);
   new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;sync();}).observe(banner);

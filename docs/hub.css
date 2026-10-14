@@ -31,13 +31,15 @@ body > main, .site-footer { position: relative; z-index: 1; }
 .banner-title { font-size: clamp(32px, 4.2vw, 56px); line-height: 1.12; letter-spacing: -1.4px; }
 .banner-title span { color: #b4f56e; display: block; }
 .banner-slogan { font-size: 19px; font-weight: 600; color: #e2eadf; margin-bottom: 8px; }
-.banner-devices { position: absolute; z-index: -2; inset: -100px -90px -260px 6%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 52px; align-content: start; transform: rotate(-22deg); animation: demo-drift 34s ease-in-out infinite alternate; }
-.demo-device { position: relative; width: 100%; max-width: 300px; }
-.demo-device:nth-child(3n + 2) { top: 90px; }
+.banner-devices { --demo-size: 220px; --demo-gap: 32px; position: absolute; z-index: -2; top: -90px; right: -96px; width: calc(var(--demo-size) * 3 + var(--demo-gap) * 2); height: calc(100% + 180px); transform: rotate(-14deg); transform-origin: 50% 0; }
+.banner-track { display: flex; flex-direction: column; width: 100%; }
+.banner-track.is-loop-ready { animation: demo-scroll 52s linear infinite; }
+.banner-group { display: grid; flex-shrink: 0; grid-template-columns: repeat(3, var(--demo-size)); gap: var(--demo-gap); padding-bottom: var(--demo-gap); }
+.demo-device { position: relative; width: var(--demo-size); }
 .banner-devices .demo-device img { display: block; position: static; width: 100%; height: auto; transform: none; margin: 0; filter: drop-shadow(0 20px 22px #0008); }
 .demo-device canvas { position: absolute; left: 18%; top: 56.5%; width: 71%; height: 35.4%; border-radius: 2px; }
-.campaign-banner.motion-idle .banner-devices { animation-play-state: paused; }
-@keyframes demo-drift { to { translate: 3% -9%; } }
+.campaign-banner.motion-idle .banner-track { animation-play-state: paused; }
+@keyframes demo-scroll { from { transform: translateY(calc(-100% / 3)); } to { transform: translateY(calc(-200% / 3)); } }
 .motion-control { position: absolute; right: 18px; bottom: 16px; z-index: 3; padding: 7px 12px; color: #e1edd5; font-size: 11px; background: #071613b3; border: 1px solid #cadfba4d; border-radius: 99px; }
 .motion-paused *, .motion-paused *::before, .motion-paused *::after, .motion-paused::before, .motion-paused::after { animation-play-state: paused !important; }
 .motion-paused .hub-grid { animation-play-state: paused; }
@@ -194,9 +196,9 @@ body > main, .site-footer { position: relative; z-index: 1; }
   .banner-copy { padding: 32px 26px; gap: 14px; }
   .banner-title { font-size: 38px; }
   .banner-slogan { font-size: 16px; }
-  .banner-devices { inset: 205px -30% -110px -15%; gap: 10px 22px; }
+  .banner-devices { --demo-size: 130px; --demo-gap: 22px; top: 230px; right: -46px; transform: rotate(-12deg); }
+  .banner-track.is-loop-ready { animation-duration: 40s; }
   .campaign-banner::after { background: linear-gradient(180deg,#071613 0%,#071613ef 32%,#07161366 66%,#07161311 100%); }
-  .banner-devices .demo-device { max-width: 200px; }
   .contribute-callout { align-items: flex-start; flex-direction: column; }
   .section-head { flex-direction: column; align-items: stretch; }
   .search { width: 100%; }
