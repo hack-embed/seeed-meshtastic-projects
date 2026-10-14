@@ -68,7 +68,7 @@ export function parseSubmission(issue, date = new Date().toISOString().slice(0,1
     tags:['Community build'], addedAt:date, url:resources[0],
     setup:get('Setup Instructions').split(/\n+/).map(s => s.trim()).filter(Boolean),
     resources:resources.map((url,index) => ({label:index === 0 ? 'Project resources' : `Resource ${index+1}`,url})),
-    activity, socialLinks:activity === 'l2-pro' ? urls('Social Links') : [], issueNumber:issue.number,
+    activity, socialLinks:urls('Social Links'), issueNumber:issue.number,
   };
   return validateProject(p);
 }

@@ -18,7 +18,7 @@ test('catalog filtering, local hearts, sorting, deep links and history',async({p
   await page.keyboard.press('Escape'); await page.goBack();
   expect(errors).toEqual([]); expect(shared).toContain('project=skysense');
 });
-test('submission validates selections, hides email, includes only L2 social links',async({page})=>{
+test('submission validates selections, hides email, and keeps media links for every activity',async({page})=>{
   await page.goto('/#submit');
   await expect(page.locator('#project-submission')).toHaveAttribute('open','');
   await expect(page.locator('#submit #project-form')).toBeVisible();
@@ -28,14 +28,21 @@ test('submission validates selections, hides email, includes only L2 social link
   await page.locator('[name=email]').fill('private@example.com'); await page.locator('[name=consent]').check();
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#form-error')).toContainText('Select at least');
   await page.getByRole('checkbox',{name:'Wio Tracker L1 Pro',exact:true}).check(); await page.getByRole('checkbox',{name:'Hardware',exact:true}).check();
-  await expect(page.locator('#social-field')).toBeHidden(); await page.locator('#related-activity').selectOption('l2-pro'); await expect(page.locator('#social-field')).toBeVisible();
+  await expect(page.locator('#social-field')).toBeVisible();
+  await expect(page.locator('#related-activity')).toHaveValue('');
+  await page.locator('[name=social]').fill('http://example.com/social');
+  await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#form-error')).toContainText('valid HTTPS URL');
   await page.locator('[name=social]').fill('https://example.com/social');
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#submission-ready')).toBeVisible();
   let href=await page.locator('#github-submit').getAttribute('href'); let body=new URL(href).searchParams.get('body');
   expect(body).toContain('https://example.com/social'); expect(body).not.toContain('private@example.com');
   expect(await page.locator('#private-email').getAttribute('href')).toContain('private%40example.com');
+  await page.locator('#related-activity').selectOption('l2-pro'); await expect(page.locator('#social-field')).toBeVisible();
+  await expect(page.locator('[name=social]')).toHaveValue('https://example.com/social');
+  await page.getByRole('button',{name:'Continue with GitHub'}).click();
+  href=await page.locator('#github-submit').getAttribute('href'); body=new URL(href).searchParams.get('body'); expect(body).toContain('https://example.com/social');
   await page.locator('#related-activity').selectOption(''); await page.getByRole('button',{name:'Continue with GitHub'}).click();
-  href=await page.locator('#github-submit').getAttribute('href'); body=new URL(href).searchParams.get('body'); expect(body).not.toContain('https://example.com/social');
+  href=await page.locator('#github-submit').getAttribute('href'); body=new URL(href).searchParams.get('body'); expect(body).toContain('https://example.com/social');
 });
 test('failed catalog fetch can be retried and hostile descriptions remain plain text',async({page})=>{
   let fail=true;

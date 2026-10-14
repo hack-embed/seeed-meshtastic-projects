@@ -26,7 +26,7 @@ export async function mountProjectForm({activity = ''} = {}) {
     : 'Your address stays out of the public submission. In the next step, send it privately with your GitHub issue link so the team can follow up.';
   function updateActivity() {
     const isL2=$('related-activity').value==='l2-pro';
-    $('social-field').hidden=!isL2;$('activity-context').hidden=!isL2;
+    $('activity-context').hidden=!isL2;
   }
   function applyActivityDefault() {
     if(activity==='l2-pro') {
@@ -112,8 +112,9 @@ export async function mountProjectForm({activity = ''} = {}) {
     if(upload && !selectedPhoto)return formError('Choose a valid photo and wait for its preview before continuing.');
     if(!upload && !safeUrl(form.get('image')))return formError('Use a public HTTPS link for the cover image.');
     const resources=String(form.get('resources')).split(/\n/).map(s=>s.trim()).filter(Boolean);
-    const social=form.get('activity')==='l2-pro' ? String(form.get('social')).split(/\n/).map(s=>s.trim()).filter(Boolean) : [];
-    if(!resources.length || !resources.every(safeUrl) || !social.every(safeUrl))return formError('Add one valid HTTPS URL per line in Resources & Links and Social Links.');
+    const social=String(form.get('social') || '').split(/\n/).map(s=>s.trim()).filter(Boolean);
+    if(!resources.length || !resources.every(safeUrl) || !social.every(safeUrl))return formError('Add one valid HTTPS URL per line in Resources & Links and Social Media Links.');
+    if(social.length>20)return formError('Add up to 20 Social Media Links.');
     const values={
       'Project Title':String(form.get('title')).trim(),'Author / Maker':String(form.get('author')).trim(),
       'Project Description':String(form.get('description')).trim(),'Project Cover Image':upload ? PHOTO_PLACEHOLDER : String(form.get('image')).trim(),

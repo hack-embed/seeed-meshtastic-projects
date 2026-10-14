@@ -111,6 +111,14 @@
       }
     },
     {
+      "type": "textarea",
+      "id": "social",
+      "attributes": {
+        "label": "Social Links",
+        "description": "Optional for any project. Add public posts or demo videos, one HTTPS URL per line (up to 20). Links appear with your approved project."
+      }
+    },
+    {
       "type": "dropdown",
       "id": "activity",
       "attributes": {
@@ -122,14 +130,6 @@
           "Meshtastic Device Design Challenge"
         ],
         "default": 0
-      }
-    },
-    {
-      "type": "textarea",
-      "id": "social",
-      "attributes": {
-        "label": "Social Links",
-        "description": "Optional, for Build With Wio Tracker L2 Pro only. One HTTPS URL per line. These links may be shared with the Seeed marketing team."
       }
     },
     {

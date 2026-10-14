@@ -41,11 +41,23 @@ test('unuploaded photo placeholders are rejected and malformed caption data cann
   for(const imageAlt of [42,{},'x'.repeat(301)]) assert.throws(()=>validateProject({...project,imageAlt}),/cover image description/);
   assert.equal(parseSubmission(issue({'Cover Image Description':' x '.repeat(150)})).imageAlt.length,300);
 });
-test('public data never includes reward email; L2 social links are exported only for L2',()=>{
-  let p = parseSubmission(issue({'Email':'private@example.com','Social Links':'https://example.com/social'}));
-  assert.equal('email' in p,false); assert.equal(JSON.stringify(p).includes('private@example.com'),false); assert.deepEqual(p.socialLinks,[]);
-  p = parseSubmission(issue({'Related Activity':'Build With Wio Tracker L2 Pro','Social Links':'https://example.com/social'}));
-  assert.deepEqual(p.socialLinks,['https://example.com/social']);
+test('all project submissions preserve social links while private reward email stays out of the catalog',()=>{
+  for(const activity of ['No related activity','Build With Wio Tracker L2 Pro','Meshtastic Build-Off 2026']) {
+    const p = parseSubmission(issue({'Related Activity':activity,'Email':'private@example.com','Social Links':'https://example.com/social\n[Demo video](https://www.youtube.com/watch?v=demo)'}));
+    assert.equal('email' in p,false); assert.equal(JSON.stringify(p).includes('private@example.com'),false);
+    assert.deepEqual(p.socialLinks,['https://example.com/social','https://www.youtube.com/watch?v=demo']);
+  }
+  assert.deepEqual(parseSubmission(issue()).socialLinks,[]);
+});
+test('social links retain HTTPS and twenty-link validation for ordinary and L2 projects',()=>{
+  const links=Array.from({length:20},(_,index)=>`https://example.com/post/${index}`);
+  for(const activity of ['No related activity','Build With Wio Tracker L2 Pro']) {
+    assert.deepEqual(parseSubmission(issue({'Related Activity':activity,'Social Links':links.join('\n')})).socialLinks,links);
+    assert.throws(()=>parseSubmission(issue({'Related Activity':activity,'Social Links':[...links,'https://example.com/post/21'].join('\n')})),/Invalid social links/);
+    for(const url of ['http://example.com/post','javascript:alert(1)','https://user:pass@example.com/post']) {
+      assert.throws(()=>parseSubmission(issue({'Related Activity':activity,'Social Links':url})));
+    }
+  }
 });
 test('unsafe links, unknown taxonomy, unchecked consent and duplicate headings are rejected',()=>{
   for (const url of ['javascript:alert(1)','http://example.com','https://user:pass@example.com']) assert.throws(()=>httpsUrl(url));
