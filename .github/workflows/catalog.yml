@@ -40,3 +40,25 @@ jobs:
             git commit -m 'Update reviewed Mesh Lab projects and community counts'
             git push origin HEAD:main
           fi
+  notify:
+    needs: update
+    runs-on: ubuntu-latest
+    # Notification/provider failures must not prevent the reviewed site from deploying.
+    # The failed job and per-project warnings remain visible for maintainers to investigate.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Send private approval notifications
+        run: node scripts/send-approval-emails.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          APPROVAL_EMAIL_PRIVATE_KEY: ${{ secrets.APPROVAL_EMAIL_PRIVATE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          APPROVAL_EMAIL_FROM: ${{ vars.APPROVAL_EMAIL_FROM }}
+          MESH_LAB_SITE_URL: ${{ vars.MESH_LAB_SITE_URL }}

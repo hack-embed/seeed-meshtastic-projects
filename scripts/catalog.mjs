@@ -21,6 +21,7 @@ export function validateProject(p) {
   text(p.title,'title',120); text(p.author,'author',100); text(p.description,'description',3000);
   uniqueArray(p.categories,'category',CATEGORIES); uniqueArray(p.products,'product',PRODUCTS);
   uniqueArray(p.devices,'devices'); uniqueArray(p.tags,'tags');
+  if (p.imageAlt !== undefined) assert(typeof p.imageAlt === 'string' && p.imageAlt.length <= 300, 'Invalid cover image description');
   httpsUrl(p.url); httpsUrl(p.image); if (p.source) httpsUrl(p.source);
   assert(/^\d{4}-\d{2}-\d{2}$/.test(p.addedAt) && new Date(p.addedAt).toISOString().slice(0,10) === p.addedAt,'Invalid catalog date');
   assert(Array.isArray(p.setup) && p.setup.length <= 100,'Invalid setup instructions');
@@ -63,7 +64,7 @@ export function parseSubmission(issue, date = new Date().toISOString().slice(0,1
   assert(activity !== undefined,'Unknown activity');
   const p = {
     id:`community-${issue.number}`, title:get('Project Title'), author:get('Author / Maker'), description:get('Project Description'),
-    image:urls('Project Cover Image')[0], categories:split('Category'), products:split('Hardware'), devices:split('Hardware'),
+    image:urls('Project Cover Image')[0], imageAlt:get('Cover Image Description').slice(0,300), categories:split('Category').map(value => ['Integration','Integrations'].includes(value) ? 'IOT' : value), products:split('Hardware'), devices:split('Hardware'),
     tags:['Community build'], addedAt:date, url:resources[0],
     setup:get('Setup Instructions').split(/\n+/).map(s => s.trim()).filter(Boolean),
     resources:resources.map((url,index) => ({label:index === 0 ? 'Project resources' : `Resource ${index+1}`,url})),

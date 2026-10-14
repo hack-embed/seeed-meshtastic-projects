@@ -9,9 +9,11 @@
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./base.css">
   <link rel="stylesheet" href="./hub.css">
+  <link rel="stylesheet" href="./forms.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
+  <div class="hub-grid" aria-hidden="true"></div>
   <a class="skip-link" href="#projects">Skip to projects</a>
   <header class="site-header">
     <div class="shell header-inner">
@@ -20,7 +22,6 @@
       <nav id="main-nav" aria-label="Main navigation">
         <a href="#projects">Project Hub</a>
         <a href="#activities">Community Activities</a>
-        <a href="#submit">Contribute a project</a>
         <a href="#contact">Contact Us</a>
       </nav>
     </div>
@@ -29,25 +30,29 @@
     <section class="home shell" id="home" aria-labelledby="home-title">
       <p class="pill-badge"><span class="dot" aria-hidden="true"></span>Seeed Studio LoRa Mesh Lab</p>
       <h1 id="home-title">Your next <span class="green">Mesh</span> project starts here.</h1>
-      <a class="campaign-banner" href="./l2.html">
+      <div class="campaign-banner">
         <div class="banner-copy">
           <span class="banner-label"><span class="dot" aria-hidden="true"></span>Featured Activity</span>
-          <strong class="banner-title">Build with <span>Wio Tracker L2 Pro</span></strong>
+          <strong class="banner-title">Build with <span>Wio Tracker <span class="model-name">L2 Pro</span></span></strong>
           <span class="banner-slogan">Create. Share. Get rewarded.</span>
-          <span class="button primary">View Activity <span aria-hidden="true">→</span></span>
+          <a class="button primary" href="./l2.html">View Activity <span aria-hidden="true">→</span></a>
         </div>
         <div class="banner-devices" aria-hidden="true">
-          <img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731" loading="eager">
-          <img src="./assets/l2-screens/tile/01-dashboard.webp" alt="" width="480" height="701" loading="eager">
-          <img src="./assets/l2-screens/tile/06-2048-color-v2.webp" alt="" width="480" height="742" loading="eager">
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="dinosaur" width="360" height="270"></canvas></div>
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="dashboard" width="360" height="270"></canvas></div>
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="blocks" width="360" height="270"></canvas></div>
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="gps" width="360" height="270"></canvas></div>
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="blocks" width="360" height="270"></canvas></div>
+          <div class="demo-device"><img src="./assets/l2-screens/tile/04-dinosaur.webp" alt="" width="480" height="731"><canvas data-demo="dinosaur" width="360" height="270"></canvas></div>
         </div>
-      </a>
+        <button id="hub-motion" class="motion-control" type="button" aria-pressed="false">Pause motion Ⅱ</button>
+      </div>
     </section>
 
     <section class="shell hub-section" id="projects" aria-labelledby="projects-title">
       <div class="section-head">
         <div><h2 id="projects-title">Project Hub</h2><p class="slogan">Discover what the community is building.</p></div>
-        <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="search" type="search" placeholder="Search projects" aria-label="Search projects"><kbd>/</kbd></label>
+        <div class="hub-tools"><button type="button" class="button outline" data-open-project>Contribute a project ↗</button><label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="search" type="search" placeholder="Search projects" aria-label="Search projects"><kbd>/</kbd></label></div>
       </div>
       <div class="filter-block">
         <div class="filter-line category-line">
@@ -62,6 +67,7 @@
       </div>
       <p id="result-count" class="result-count" role="status" aria-live="polite">Loading projects…</p>
       <div class="project-grid" id="project-grid" aria-label="Projects"></div>
+      <div class="contribute-callout"><div><h3>What will you build next?</h3><p>Share your project and inspire the community.</p></div><button class="button primary" type="button" data-open-project>Contribute a project <span aria-hidden="true">↗</span></button></div>
       <div class="empty-state" id="empty" hidden><h3>No projects found</h3><p>Try a different keyword, category, or device.</p><button class="button outline" id="reset" type="button">Clear filters</button></div>
       <div class="empty-state" id="load-error" hidden><h3>Projects are unavailable</h3><p>Please check your connection and try again.</p><button class="button outline" id="retry" type="button">Try again</button></div>
     </section>
@@ -92,23 +98,19 @@
       </div>
     </section>
 
-    <section class="shell hub-section" id="submit" aria-labelledby="submit-title">
-      <div class="section-head"><div><h2 id="submit-title">Submit a Project</h2><p class="slogan">Sign in with GitHub to submit. Your project appears in the Project Hub after AE review.</p></div></div>
-      <div id="project-form-mount"><p>Loading the submission form…</p></div>
-    </section>
-
     <section class="shell hub-section" id="contact" aria-labelledby="contact-title">
       <div class="section-head"><div><h2 id="contact-title">Contact Us</h2></div></div>
       <div class="contact-grid">
         <a class="contact-card" href="mailto:sensecap@seeed.cc"><span>Technical Support</span><strong>sensecap@seeed.cc</strong></a>
         <a class="contact-card" href="https://www.facebook.com/groups/1755190828846458" target="_blank" rel="noopener noreferrer"><span>LoRa &amp; Mesh Community</span><strong>Join on Facebook <span aria-hidden="true">↗</span></strong></a>
         <a class="contact-card" href="https://discord.gg/mQfW9Vj88z" target="_blank" rel="noopener noreferrer"><span>Seeed Studio Discord</span><strong>Join on Discord <span aria-hidden="true">↗</span></strong></a>
-        <a class="contact-card" href="https://www.seeedstudio.com/meshtastic-products" target="_blank" rel="noopener noreferrer"><span>Learn More</span><strong>Meshtastic <span aria-hidden="true">↗</span></strong></a>
+        <a class="contact-card learn-more" href="https://www.seeedstudio.com/meshtastic-products" target="_blank" rel="noopener noreferrer"><strong>Learn More <span aria-hidden="true">↗</span></strong></a>
       </div>
     </section>
   </main>
   <footer class="site-footer"><div class="shell footer-inner"><img src="./assets/seeed-logo.png" alt="Seeed Studio" width="118" height="13"><p>LoRa Mesh Lab. Projects and images belong to their creators.</p></div></footer>
   <dialog id="detail" aria-labelledby="detail-title"><button class="dialog-close" data-close aria-label="Close project details">×</button><div id="detail-content"></div></dialog>
+  <dialog id="submit-dialog" class="submission-dialog" aria-labelledby="submit-title"><button class="dialog-close" data-close-submit type="button" aria-label="Close project submission">×</button><div class="submission-dialog-heading"><h2 id="submit-title">Submit a Project</h2><p>Sign in with GitHub to submit. Your project appears in the Project Hub after AE review.</p></div><div id="project-form-mount"><p>Loading the submission form…</p></div></dialog>
   <div id="toast" role="status" class="toast" hidden></div>
   <noscript><div class="noscript">Enable JavaScript to browse LoRa Mesh Lab. You can also <a href="./data/projects.json">view the project catalog</a> or <a href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml">submit a project on GitHub</a>.</div></noscript>
 </body>

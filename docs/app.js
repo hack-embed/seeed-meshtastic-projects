@@ -1,3 +1,5 @@
+import { initHubMotion } from './hub-motion.js';
+import { matchesProject } from './search.js';
 import { mountProjectForm } from './project-form.js';
 import { CATEGORIES, PRODUCTS, ACTIVITIES, REPO_URL } from './config.js';
 const $ = (id) => document.getElementById(id);
@@ -5,7 +7,6 @@ const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp
 const safeUrl = (value) => {
   try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : ''; } catch { return ''; }
 };
-const normalize = (value) => value.toLowerCase().replace(/[\s_\-–]+/g, '');
 const link = (url, label, cls = '') => safeUrl(url) ? `<a class="${cls}" href="${escapeHtml(safeUrl(url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>` : '';
 const fallback = '<div class="fallback-cover"><span aria-hidden="true">⌁</span><span>MADE FOR THE MESH</span></div>';
 const dateLabel = (date) => new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
@@ -15,15 +16,19 @@ const ICON_PATHS = {
   'Firmware': 'm8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18',
   'Hardware': 'M6 6h12v12H6zM9 1v5m6-5v5M9 18v5m6-5v5M1 9h5m-5 6h5m12-6h5m-5 6h5',
   'APP': 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm4 16h2',
-  'Integrations': 'M9 17H7A5 5 0 0 1 7 7h2m6 0h2a5 5 0 0 1 0 10h-2m-7-5h8',
+  'IOT': 'M9 17H7A5 5 0 0 1 7 7h2m6 0h2a5 5 0 0 1 0 10h-2m-7-5h8',
   'Intelligent System': 'M9 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-2Zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1',
   'Others': 'm12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z',
 };
 const icon = (name) => `<svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name] || ICON_PATHS.Others}"/></svg>`;
 const params = new URLSearchParams(location.search);
 let projects = [], engagement = {}, activeProject = null, device = 'all', sort = 'newest';
-let category = CATEGORIES.includes(params.get('category')) ? params.get('category') : 'all';
+let category = categoryFromUrl(params.get('category'));
 
+function categoryFromUrl(value) {
+  if (['Integration', 'Integrations'].includes(value)) return 'IOT';
+  return CATEGORIES.includes(value) ? value : 'all';
+}
 function readStorage(key, initial) {
   try { return JSON.parse(localStorage.getItem(key)) ?? initial; } catch { return initial; }
 }
@@ -54,7 +59,7 @@ function setFiltersFromUrl() {
   $('search').value = current.get('q') || '';
   device = PRODUCTS.includes(current.get('device')) ? current.get('device') : 'all';
   sort = current.get('sort') === 'likes' ? 'likes' : 'newest';
-  category = CATEGORIES.includes(current.get('category')) ? current.get('category') : 'all';
+  category = categoryFromUrl(current.get('category'));
 }
 function syncUrl() {
   const url = new URL(location.href);
@@ -66,16 +71,26 @@ function syncUrl() {
   history.replaceState(null, '', url);
 }
 function render() {
-  const words = $('search').value.trim().split(/\s+/).filter(Boolean).map(normalize);
-  const result = projects.filter(p => (category === 'all' || p.categories.includes(category)) && (device === 'all' || p.products.includes(device)) && words.every(word => normalize([p.title,p.description,p.author,...p.categories,...p.devices,...p.products,...p.tags].join(' ')).includes(word)));
+  const result = projects.filter(p => (category === 'all' || p.categories.includes(category)) && (device === 'all' || p.products.includes(device)) && matchesProject(p, $('search').value));
   result.sort((a,b) => (sort === 'likes' ? stats(b).hearts - stats(a).hearts : 0) || b.addedAt.localeCompare(a.addedAt));
   $('categories').innerHTML = ['all', ...CATEGORIES].map(name => `<button class="tab" type="button" data-category="${escapeHtml(name)}" aria-pressed="${name === category}">${icon(name)}<span>${name === 'all' ? 'All categories' : escapeHtml(name)}</span></button>`).join('');
   $('devices').innerHTML = ['all', ...PRODUCTS].map(name => `<button class="chip" type="button" data-device="${escapeHtml(name)}" aria-pressed="${name === device}">${name === 'all' ? 'All devices' : escapeHtml(name)}</button>`).join('');
   $('sort').querySelectorAll('[data-sort]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sort === sort)));
   $('result-count').textContent = `${result.length} project${result.length === 1 ? '' : 's'} to explore`;
   $('empty').hidden = result.length > 0 || !$('load-error').hidden;
-  $('project-grid').innerHTML = result.map(p => `<article class="project-card"><div class="card-cover"><button type="button" class="cover-button" data-detail="${p.id}" tabindex="-1" aria-hidden="true">${safeUrl(p.image) ? `<img data-cover src="${escapeHtml(safeUrl(p.image))}" alt="" loading="lazy" decoding="async">` : fallback}</button><div class="cover-tags">${p.categories.map(c => `<span class="tag-category">${escapeHtml(c)}</span>`).join('')}${p.products.map(product => `<span>${escapeHtml(product)}</span>`).join('')}</div></div><div class="card-body"><h3><button class="card-title" data-detail="${p.id}" type="button">${escapeHtml(p.title)}</button></h3><p class="card-description">${escapeHtml(p.description)}</p><div class="card-bottom"><span class="card-meta"><span class="hearts" aria-label="${stats(p).hearts} hearts">${likes.has(p.id) ? '♥' : '♡'} ${stats(p).hearts}</span><time datetime="${p.addedAt}">${dateLabel(p.addedAt)}</time></span><button class="view-project" type="button" data-detail="${p.id}">View Project ↗</button></div></div></article>`).join('');
+  $('project-grid').innerHTML = result.map(p => `<article class="project-card"><div class="card-cover"><button type="button" class="cover-button" data-detail="${p.id}" tabindex="-1" aria-hidden="true">${safeUrl(p.image) ? `<img data-cover src="${escapeHtml(safeUrl(p.image))}" alt="" loading="lazy" decoding="async">` : fallback}</button><div class="cover-tags">${p.categories.map(c => `<span class="tag-category">${escapeHtml(c)}</span>`).join('')}${p.products.map(product => `<span>${escapeHtml(product)}</span>`).join('')}</div></div><div class="card-body"><h3><button class="card-title" data-detail="${p.id}" type="button">${escapeHtml(p.title)}</button></h3><p class="card-description">${escapeHtml(p.description)}</p>${projectLinks(p, true)}<div class="card-bottom"><span class="card-meta"><span class="hearts" aria-label="${stats(p).hearts} hearts">${likes.has(p.id) ? '♥' : '♡'} ${stats(p).hearts}</span><time datetime="${p.addedAt}">${dateLabel(p.addedAt)}</time></span><button class="view-project" type="button" data-detail="${p.id}">View Project ↗</button></div></div></article>`).join('');
   attachImageFallbacks($('project-grid'));
+}
+function socialLabel(url) {
+  try { const host = new URL(url).hostname.replace(/^www\./, ''); return ({'x.com':'X','twitter.com':'X','youtu.be':'YouTube','youtube.com':'YouTube','reddit.com':'Reddit','facebook.com':'Facebook','m.facebook.com':'Facebook'})[host] || host; } catch { return 'Social post'; }
+}
+function projectLinks(p, compact = false) {
+  const resources = (p.resources || []).filter(r => safeUrl(r.url));
+  const social = (p.socialLinks || []).filter(safeUrl);
+  const limit = compact ? 2 : 30;
+  const title = label => compact ? `<span class="card-links-label">${label}</span>` : `<h3>${label}</h3>`;
+  const more = count => compact && count > limit ? `<button class="more-links" type="button" data-detail="${p.id}">+${count - limit} more</button>` : '';
+  return `<div class="${compact ? 'card-links' : 'detail-link-groups'}">${title('Resources &amp; Links')}<div class="resource-links">${resources.slice(0,limit).map(r => link(r.url,r.label,'resource-link')).join('')}${more(resources.length)}</div>${title('Social Links')}<div class="resource-links social-links">${social.length ? social.slice(0,limit).map(url => link(url,socialLabel(url),'resource-link')).join('') + more(social.length) : '<span class="no-links">No social links yet</span>'}</div></div>`;
 }
 function discussionUrl(p) {
   const issue = stats(p).issueNumber;
@@ -92,7 +107,7 @@ function threadHtml(s) {
 function detailHtml(p) {
   const s = stats(p);
   const activity = ACTIVITIES.find(a => a.id === p.activity);
-  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}<h3>Resources &amp; Links</h3><ul class="detail-resources">${p.resources.map(r => `<li>${link(r.url,r.label)}</li>`).join('')}</ul><h3>Related Activity</h3><p>${activity ? (activity.id === 'l2-pro' ? `<a class="text-link" href="./l2.html">${escapeHtml(activity.title)} →</a>` : activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'None'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><h3>Comments</h3>${threadHtml(s)}<p class="engagement-note">Likes and shares you add here are saved in this browser. Comments are posted on GitHub and require sign-in. Published GitHub hearts and comments update here about once an hour.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
+  return `${safeUrl(p.image) ? `<img class="detail-image" data-cover src="${escapeHtml(safeUrl(p.image))}" alt="${escapeHtml(p.imageAlt || p.title)}">` : fallback}<div class="dialog-body"><p class="eyebrow">${p.categories.map(escapeHtml).join(' / ')}</p><h2 id="detail-title">${escapeHtml(p.title)}</h2><p class="detail-meta">By ${escapeHtml(p.author)} · Added ${dateLabel(p.addedAt)}</p><h3>Project Description</h3><p>${escapeHtml(p.description)}</p><h3>Products Used</h3><div class="tags">${p.devices.map(d => `<span class="tag">${escapeHtml(d)}</span>`).join('')}</div><h3>Setup Instructions</h3>${p.setup.length ? `<ol>${p.setup.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '<p>The maker has not added setup instructions yet. See the resources below.</p>'}${projectLinks(p)}<h3>Related Activity</h3><p>${activity ? (activity.id === 'l2-pro' ? `<a class="text-link" href="./l2.html">${escapeHtml(activity.title)} →</a>` : activity.url ? link(activity.url,activity.title) : `${escapeHtml(activity.title)} · Details coming soon`) : 'None'}</p><div class="detail-actions"><button type="button" class="button outline" id="detail-like" aria-pressed="${likes.has(p.id)}">${likes.has(p.id) ? '♥ Liked' : '♡ Like'} <span>${s.hearts}</span></button>${link(discussionUrl(p), `Comments · ${s.comments}`, 'button outline')}<button type="button" class="button outline" id="detail-share">Share ↗ <span>${shares[p.id] || 0}</span></button></div><h3>Comments</h3>${threadHtml(s)}<p class="engagement-note">Likes and shares you add here are saved in this browser. Comments are posted on GitHub and require sign-in. Published GitHub hearts and comments update here about once an hour.${s.issueNumber ? ` ${link(`${REPO_URL}/issues/${s.issueNumber}`, 'Add a public heart on GitHub')}` : ' No discussion has been linked yet; start one using Comments.'}</p><p class="detail-attribution">Project and images credited to ${escapeHtml(p.author)}. Consult the original resources for design files, licenses, and complete build instructions.</p></div>`;
 }
 function showDetail(id) {
   const p = projects.find(item => item.id === id); if (!p) return;
@@ -109,7 +124,17 @@ function closeDetailRoute() {
   activeProject = null;
   const url = new URL(location.href); url.searchParams.delete('project'); history.replaceState(null, '', url);
 }
-const sectionIds = ['home', 'projects', 'activities', 'submit', 'contact'];
+const sectionIds = ['home', 'projects', 'activities', 'contact'];
+let projectFormPromise, submissionFromHash = false;
+async function openSubmission() {
+  if (!$('submit-dialog').open) $('submit-dialog').showModal();
+  if (!projectFormPromise) projectFormPromise = mountProjectForm({activity: new URLSearchParams(location.search).get('activity') || ''});
+  if (!await projectFormPromise) projectFormPromise = null;
+}
+for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', openSubmission);
+$('submit-dialog').querySelector('[data-close-submit]').addEventListener('click', () => $('submit-dialog').close());
+$('submit-dialog').addEventListener('click', event => { const r = event.currentTarget.getBoundingClientRect(); if (event.target === event.currentTarget && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) event.currentTarget.close(); });
+$('submit-dialog').addEventListener('close', () => { submissionFromHash = false; if (location.hash === '#submit') { const url = new URL(location.href); url.hash = 'projects'; history.replaceState(null, '', url); } });
 function markCurrentSection(id) {
   document.querySelectorAll('#main-nav a').forEach(a => {
     if (a.hash === `#${id}`) a.setAttribute('aria-current', 'location');
@@ -117,6 +142,8 @@ function markCurrentSection(id) {
   });
 }
 function route(scroll = true) {
+  if (location.hash === '#submit') { submissionFromHash = true; openSubmission(); return; }
+  if (submissionFromHash && $('submit-dialog').open) $('submit-dialog').close();
   const section = sectionIds.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
   markCurrentSection(section);
   $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false');
@@ -188,7 +215,7 @@ window.addEventListener('hashchange', () => route());
 window.addEventListener('popstate', () => { setFiltersFromUrl(); render(); route(); });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && $('main-nav').classList.contains('is-open')) { $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false'); $('menu-toggle').focus(); }
-  if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
+  if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !$('submit-dialog').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
 });
 // Restore a direct section link after the asynchronous content sets its final position.
 // Once the visitor starts interacting, leave scrolling under their control.
@@ -199,7 +226,8 @@ for (const event of ['pointerdown', 'wheel', 'touchstart', 'keydown']) {
   window.addEventListener(event, () => { visitorInteracted = true; }, {passive: true, signal: initialNavigation.signal});
 }
 route(false); render();
-Promise.all([mountProjectForm({activity: params.get('activity') || ''}), loadProjects()]).then(() => {
+initHubMotion();
+loadProjects().then(() => {
   if (!visitorInteracted && location.hash === initialHash && sectionIds.includes(initialHash.slice(1)) && !$('detail').open) {
     $(initialHash.slice(1)).scrollIntoView({block: 'start', behavior: 'instant'});
   }

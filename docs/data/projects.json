@@ -55,7 +55,7 @@
     "description": "Build low-power sensor networks with EasySkyMesh, a community firmware based on MeshCore. Add power-saving features and supported I2C sensors to Wio Tracker L1 for remote monitoring and off-grid experiments.",
     "categories": [
       "Firmware",
-      "Integrations"
+      "IOT"
     ],
     "products": [
       "Wio Tracker L1 Pro",
@@ -236,7 +236,7 @@
     "description": "A hybrid Meshtastic gateway based on Wio Tracker L1, designed to collect environmental telemetry, relay it across the mesh, and bridge it to the cloud via MQTT for real-time remote monitoring.",
     "categories": [
       "3D Prints & Enclosures",
-      "Integrations"
+      "IOT"
     ],
     "products": [
       "Wio Tracker L1/E-ink"
@@ -531,7 +531,7 @@
     "image": "https://raw.githubusercontent.com/Seeed-Solution/MeshClaw/main/media/GoMeshClaw.png",
     "categories": [
       "Intelligent System",
-      "Integrations"
+      "IOT"
     ],
     "products": [
       "XIAO ESP32S3 Kit",
@@ -569,7 +569,7 @@
     "image": "https://files.seeedstudio.com/wiki/reCamera/Applications/Meshtastic/1_1_3.jpg",
     "categories": [
       "Intelligent System",
-      "Integrations"
+      "IOT"
     ],
     "products": [
       "XIAO ESP32S3 Kit",
@@ -605,7 +605,7 @@
     "image": "https://raw.githubusercontent.com/Seeed-Projects/Hailo-AI-Box-Mashtastic/master/resource/connection.png",
     "categories": [
       "Intelligent System",
-      "Integrations"
+      "IOT"
     ],
     "products": [
       "XIAO nRF52840 Kit"

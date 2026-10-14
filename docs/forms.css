@@ -1,0 +1,26 @@
+/* Form-specific UI shared by the Mesh Lab and activity dialogs. */
+.form-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.form-toolbar p { color: var(--muted); font-size: 14px; }
+.form-toolbar .button { min-height: 38px; padding-inline: 14px; font-size: 13px; }
+.cover-methods { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.project-form .cover-methods label.cover-method { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.project-form .cover-method:has(input:checked) { border-color: var(--green); background: var(--green-soft); }
+.project-form .cover-method input { width: 16px; height: 16px; padding: 0; margin: 0; accent-color: var(--green-dark); }
+.project-form input[type="file"] { padding: 10px; white-space: normal; }
+.project-form input[type="file"]::file-selector-button { border: 0; padding: 8px 12px; border-radius: 6px; margin-right: 10px; background: var(--green-soft); color: var(--ink); font: inherit; cursor: pointer; }
+.photo-preview { padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #f6f9f3; }
+.photo-preview img { max-height: 220px; width: 100%; object-fit: contain; border-radius: 8px; }
+.photo-preview p { color: var(--muted); font-size: 12px; margin-top: 8px; overflow-wrap: anywhere; }
+.project-form .cover-field > label:last-child { margin-bottom: 0; }
+.photo-handoff { background: white; border: 1px solid #ccdcb8; padding: 16px; border-radius: 10px; margin: 16px 0; }
+.photo-handoff h4 { font-size: 14px; margin-bottom: 8px; }
+.photo-handoff p { overflow-wrap: anywhere; }
+.share-project-status { margin: -12px 0 22px; }
+.share-project-status .button { margin-top: 10px; }
+.submission-ready a, .project-form select { max-width: 100%; }
+@media (max-width: 440px) {
+  .submission-ready .button { white-space: normal; text-align: center; padding-block: 10px; }
+  .form-toolbar { gap: 8px; }
+  .cover-methods { gap: 8px; }
+  .project-form .cover-methods label.cover-method { padding-inline: 10px; }
+}

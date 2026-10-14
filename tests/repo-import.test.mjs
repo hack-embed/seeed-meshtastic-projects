@@ -44,3 +44,19 @@ test('missing README falls back to metadata and never emits reserved headings',(
  assert.equal(d.title,'mesh-tracker'); assert(!/^###/m.test(d.description)); assert.deepEqual(d.setup,[]);
  assert.equal(d.image,'https://opengraph.githubassets.com/1/maker/mesh-tracker'); assert.equal(d.imageFromReadme,false);
 });
+test('X1 hardware and IOT categories are detected from repository metadata and README',()=>{
+ for(const name of ['SenseCAP MeshTracker X1','MeshTracker-X1','Mesh Tracker X1','SenseCAP X1']) {
+  const data=extractProject({...repo,name:'garden-gateway',description:`${name} with MQTT telemetry and Home Assistant.`,topics:['mqtt'],language:'Python'},'','/maker/garden-gateway');
+  assert.deepEqual(data.hardware,['SenseCAP MeshTracker X1']);
+  assert.deepEqual(data.categories,['IOT']);
+ }
+ const data=extractProject({...repo,name:'weather-node',description:'',topics:[],language:'Python'},'# Garden monitor\n\nA MeshTracker X1 device sends measurements to MQTT and Home Assistant.\n','/maker/weather-node');
+ assert.deepEqual(data.hardware,['SenseCAP MeshTracker X1']);
+ assert.deepEqual(data.categories,['IOT']);
+});
+test('unrelated X10 and X100 names do not select the X1 product',()=>{
+ for(const name of ['MeshTracker X10','MeshTracker X100','SenseCAP X10','another X1 board']) {
+  const data=extractProject({...repo,name,description:'',topics:[]},'','/maker/device');
+  assert(!data.hardware.includes('SenseCAP MeshTracker X1'));
+ }
+});

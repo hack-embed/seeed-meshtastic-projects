@@ -58,6 +58,7 @@
         "multiple": true,
         "options": [
           "T1000-E",
+          "SenseCAP MeshTracker X1",
           "Wio Tracker L1 Pro",
           "Wio Tracker L1/E-ink",
           "Solar Node P1 series",
@@ -81,7 +82,7 @@
           "Firmware",
           "Hardware",
           "APP",
-          "Integrations",
+          "IOT",
           "Intelligent System",
           "Others"
         ]

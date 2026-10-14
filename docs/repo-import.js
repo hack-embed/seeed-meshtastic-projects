@@ -1,6 +1,7 @@
 import { PRODUCTS, CATEGORIES } from './config.js';
 // Rule-based extraction that turns a public repository and its README into submission form values.
 const HARDWARE = {
+  'SenseCAP MeshTracker X1': /mesh[\s-]?tracker[\s-]?x1\b|\bsensecap[\s-]?x1\b/i,
   'T1000-E': /t1000[\s-]?e\b/i,
   'Wio Tracker L1 Pro': /\bl1[\s-]?pro\b/i,
   'Wio Tracker L1/E-ink': /\bl1\W{0,3}e[\s-]?ink\b/i,
@@ -14,7 +15,7 @@ const CATEGORY_RULES = {
   '3D Prints & Enclosures': /3d[\s-]?print|enclosure|\bstls?\b|\.3mf\b/gi,
   'Hardware': /\bpcb\b|kicad|schematic|gerber|easyeda/gi,
   'APP': /android|\bios\b|flutter|react native|mobile app|desktop app|web app/gi,
-  'Integrations': /home assistant|mqtt|node-red|webhook|telegram|discord|grafana|influxdb/gi,
+  'IOT': /home assistant|mqtt|node-red|webhook|telegram|discord|grafana|influxdb/gi,
   'Intelligent System': /\bai\b|\bllm\b|machine learning|tinyml|neural network|computer vision/gi,
 };
 const LANGUAGE_CATEGORY = { C: 'Firmware', 'C++': 'Firmware', Rust: 'Firmware', Kotlin: 'APP', Swift: 'APP', Dart: 'APP' };

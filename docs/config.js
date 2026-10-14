@@ -1,9 +1,9 @@
 export const CATEGORIES = [
   '3D Prints & Enclosures', 'Firmware', 'Hardware', 'APP',
-  'Integrations', 'Intelligent System', 'Others',
+  'IOT', 'Intelligent System', 'Others',
 ];
 export const PRODUCTS = [
-  'T1000-E', 'Wio Tracker L1 Pro', 'Wio Tracker L1/E-ink',
+  'T1000-E', 'SenseCAP MeshTracker X1', 'Wio Tracker L1 Pro', 'Wio Tracker L1/E-ink',
   'Solar Node P1 series', 'Wio Tracker L2 Pro', 'XIAO nRF52840 Kit', 'XIAO ESP32S3 Kit',
 ];
 export const ACTIVITIES = [
