@@ -2,7 +2,7 @@ export const L2 = Object.freeze({
   title: 'Build with Wio Tracker L2 Pro',
   activity: 'l2-pro',
   product: 'Wio Tracker L2 Pro',
-  purchaseUrl: null,
+  purchaseUrl: 'https://www.seeedstudio.com/Wio-Tracker-L2-Pro-for-Meshtastic-p-0000.html',
   wikiUrl: 'https://wiki.seeedstudio.com/meshtastic_wio_tracker_l2_intro/',
   contact: 'sensecap@seeed.cc',
   imageSource: 'https://files.seeedstudio.com/wiki/SenseCAP/Wio_Tracker_L2/L2First.png',

@@ -93,7 +93,7 @@ Build Reward is a **Seeed Discount Coupon: $15 off orders of $50+**. Shipping do
 
 Share Reward is a **Seeed Merchandise Pack** for an approved project whose social post reaches an eligible platform’s milestone. Social sharing is optional. Each project may earn one coupon and one merchandise pack; reaching milestones on multiple platforms does not earn extra packs for the same project. Merchandise may include pins, Velcro patches, and mugs, with contents depending on availability. The site prepares submissions; AE handles review and reward fulfillment.
 
-Purchase buttons remain disabled with Coming Soon text until a purchase URL is supplied. Set `purchaseUrl` in `docs/l2-config.js` to enable them. The activity Wiki and contact email are configured there. No deadline, coupon expiration, or dispatch time is specified.
+The hero and Start Building purchase buttons open the L2 product page configured by `purchaseUrl` in `docs/l2-config.js`. The activity Wiki and contact email are configured there. No deadline, coupon expiration, or dispatch time is specified.
 
 The local product cutout `docs/assets/l2-pro.webp` was cropped from the official Seeed Wiki photo at `https://files.seeedstudio.com/wiki/SenseCAP/Wio_Tracker_L2/L2First.png`. Step images live in `docs/assets/l2-steps/`; the screen tiles in `docs/assets/l2-screens/tile/` are resized copies of the provided L2 screenshots. Shared styles are in `docs/base.css`; the hub uses `docs/hub.css` and the activity page `docs/l2.css`.
 
