@@ -124,17 +124,28 @@ function closeDetailRoute() {
   activeProject = null;
   const url = new URL(location.href); url.searchParams.delete('project'); history.replaceState(null, '', url);
 }
-const sectionIds = ['home', 'projects', 'activities', 'contact'];
-let projectFormPromise, submissionFromHash = false;
-async function openSubmission() {
-  if (!$('submit-dialog').open) $('submit-dialog').showModal();
+const sectionIds = ['home', 'projects', 'activities', 'submit', 'contact'];
+let projectFormPromise;
+async function loadSubmissionForm() {
   if (!projectFormPromise) projectFormPromise = mountProjectForm({activity: new URLSearchParams(location.search).get('activity') || ''});
   if (!await projectFormPromise) projectFormPromise = null;
 }
-for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', openSubmission);
-$('submit-dialog').querySelector('[data-close-submit]').addEventListener('click', () => $('submit-dialog').close());
-$('submit-dialog').addEventListener('click', event => { const r = event.currentTarget.getBoundingClientRect(); if (event.target === event.currentTarget && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) event.currentTarget.close(); });
-$('submit-dialog').addEventListener('close', () => { submissionFromHash = false; if (location.hash === '#submit') { const url = new URL(location.href); url.hash = 'projects'; history.replaceState(null, '', url); } });
+function openSubmission(scroll) {
+  $('project-submission').open = true;
+  void loadSubmissionForm();
+  if (scroll) $('submit').scrollIntoView({block: 'start'});
+}
+for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', () => {
+  if (location.hash !== '#submit') {
+    const url = new URL(location.href); url.hash = 'submit';
+    history.pushState(null, '', url);
+  }
+  route();
+  $('project-submission').querySelector('summary').focus({preventScroll: true});
+});
+$('project-submission').addEventListener('toggle', () => {
+  if ($('project-submission').open) void loadSubmissionForm();
+});
 function markCurrentSection(id) {
   document.querySelectorAll('#main-nav a').forEach(a => {
     if (a.hash === `#${id}`) a.setAttribute('aria-current', 'location');
@@ -142,15 +153,14 @@ function markCurrentSection(id) {
   });
 }
 function route(scroll = true) {
-  if (location.hash === '#submit') { submissionFromHash = true; openSubmission(); return; }
-  if (submissionFromHash && $('submit-dialog').open) $('submit-dialog').close();
   const section = sectionIds.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
   markCurrentSection(section);
   $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false');
   const requested = new URLSearchParams(location.search).get('project');
   if (section === 'projects' && requested && projects.some(p => p.id === requested)) showDetail(requested);
   else if ($('detail').open) $('detail').close();
-  if (scroll && !$('detail').open) $(section).scrollIntoView({block: 'start'});
+  if (section === 'submit' && scroll) openSubmission(true);
+  else if (scroll && !$('detail').open) $(section).scrollIntoView({block: 'start'});
 }
 let scrollFrame = null;
 window.addEventListener('scroll', () => {
@@ -215,7 +225,7 @@ window.addEventListener('hashchange', () => route());
 window.addEventListener('popstate', () => { setFiltersFromUrl(); render(); route(); });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && $('main-nav').classList.contains('is-open')) { $('main-nav').classList.remove('is-open'); $('menu-toggle').setAttribute('aria-expanded','false'); $('menu-toggle').focus(); }
-  if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !$('submit-dialog').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
+  if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !$('detail').open && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) { event.preventDefault(); if (location.hash !== '#projects') { location.hash = 'projects'; route(false); } $('search').focus(); }
 });
 // Restore a direct section link after the asynchronous content sets its final position.
 // Once the visitor starts interacting, leave scrolling under their control.
@@ -226,6 +236,7 @@ for (const event of ['pointerdown', 'wheel', 'touchstart', 'keydown']) {
   window.addEventListener(event, () => { visitorInteracted = true; }, {passive: true, signal: initialNavigation.signal});
 }
 route(false); render();
+if (initialHash === '#submit') openSubmission(false);
 initHubMotion();
 loadProjects().then(() => {
   if (!visitorInteracted && location.hash === initialHash && sectionIds.includes(initialHash.slice(1)) && !$('detail').open) {

@@ -100,6 +100,14 @@
       </div>
     </section>
 
+    <section class="shell hub-section submission-section" id="submit" aria-labelledby="submit-title">
+      <details class="submission-panel" id="project-submission">
+        <summary><h2 id="submit-title"><span>Submit a Project</span><span class="submission-toggle" aria-hidden="true"><span class="when-closed">Expand form</span><span class="when-open">Collapse form</span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></h2></summary>
+        <p class="submission-intro">Sign in with GitHub to submit. Your project appears in the Project Hub after AE review.</p>
+        <div id="project-form-mount"><p>Loading the submission form…</p></div>
+      </details>
+    </section>
+
     <section class="shell hub-section" id="contact" aria-labelledby="contact-title">
       <div class="section-head"><div><h2 id="contact-title">Contact Us</h2></div></div>
       <div class="contact-grid">
@@ -112,7 +120,6 @@
   </main>
   <footer class="site-footer"><div class="shell footer-inner"><img src="./assets/seeed-logo.png" alt="Seeed Studio" width="118" height="13"><p>LoRa Mesh Lab. Projects and images belong to their creators.</p></div></footer>
   <dialog id="detail" aria-labelledby="detail-title"><button class="dialog-close" data-close aria-label="Close project details">×</button><div id="detail-content"></div></dialog>
-  <dialog id="submit-dialog" class="submission-dialog" aria-labelledby="submit-title"><button class="dialog-close" data-close-submit type="button" aria-label="Close project submission">×</button><div class="submission-dialog-heading"><h2 id="submit-title">Submit a Project</h2><p>Sign in with GitHub to submit. Your project appears in the Project Hub after AE review.</p></div><div id="project-form-mount"><p>Loading the submission form…</p></div></dialog>
   <div id="toast" role="status" class="toast" hidden></div>
   <noscript><div class="noscript">Enable JavaScript to browse LoRa Mesh Lab. You can also <a href="./data/projects.json">view the project catalog</a> or <a href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml">submit a project on GitHub</a>.</div></noscript>
 </body>

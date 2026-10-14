@@ -233,10 +233,28 @@ body > main, .site-footer { position: relative; z-index: 1; }
 .contribute-callout h3 { font-size: 22px; color: var(--blue); }
 .contribute-callout p { margin-top: 8px; color: var(--muted); font-size: 15px; }
 .learn-more { justify-content: center; background: linear-gradient(120deg,#e4f1ce,#ecf6e4); }
-.submission-dialog-heading { padding: 28px 32px 0; }
-.submission-dialog-heading h2 { font-size: 26px; color: var(--blue); }
-.submission-dialog-heading p { margin-top: 8px; color: var(--muted); line-height: 1.6; }
-.submission-dialog .project-form { border: 0; }
+.submission-section { padding-top: 48px; }
+.submission-panel { border: 1px solid #cbdcc1; border-radius: 18px; background: white; }
+.submission-panel > summary { padding: 28px 32px; cursor: pointer; list-style: none; border-radius: 18px; background: linear-gradient(110deg, #edf6e0, #eff8f4); }
+.submission-panel > summary::-webkit-details-marker { display: none; }
+.submission-panel > summary h2 { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--blue); font-size: clamp(24px, 3vw, 30px); }
+.submission-toggle { display: flex; align-items: center; gap: 10px; color: #527326; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.submission-panel .when-open { display: none; }
+.submission-panel[open] .when-closed { display: none; }
+.submission-panel[open] .when-open { display: inline; }
+.submission-panel[open] .submission-toggle svg { transform: rotate(180deg); }
+.submission-panel[open] > summary { border-radius: 18px 18px 0 0; border-bottom: 1px solid #dce8d5; }
+.submission-intro { padding: 28px 32px 0; color: var(--muted); line-height: 1.6; }
+.submission-panel #project-form-mount { padding-bottom: 24px; }
+.submission-panel .project-form { border: 0; }
+.submission-panel #form-message { margin-inline: 32px; }
+@media (max-width: 640px) {
+  .submission-panel > summary { padding: 22px 20px; }
+  .submission-panel > summary h2 { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .submission-toggle { font-size: 13px; }
+  .submission-intro { padding: 22px 20px 0; }
+  .submission-panel #form-message { margin-inline: 20px; }
+}
 
 .banner-title .model-name { display: inline; white-space: nowrap; }
 .hub-tools { display: flex; align-items: center; gap: 12px; }

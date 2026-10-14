@@ -10,7 +10,7 @@ An English-language community project collection for Seeed Mesh hardware. The we
 python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
 ```
 
-Open http://127.0.0.1:8765/. Home, Projects, Community Activities, and Contact Us are sections of one page. Contribute a project opens a modal; it is no longer a navigation item. Existing `#projects` links and `?project=ID#projects` project links remain valid. Legacy `#submit` links open the same modal. Learn More links directly to Seeed’s Mesh product page.
+Open http://127.0.0.1:8765/. Home, Projects, Community Activities, the submission form, and Contact Us are sections of one page. The submission form sits below Community Activities and starts collapsed. Contribute a project expands and scrolls to it; collapsing the form preserves the draft. It is not a navigation item. Existing `#projects` links and `?project=ID#projects` project links remain valid, and `#submit` links expand the same form. Learn More links directly to Seeed’s Mesh product page.
 
 ## Checks
 
@@ -21,7 +21,7 @@ npm test
 npx playwright test
 ```
 
-The tests cover catalog approval, taxonomy and repository import, search matching, photo captions, private contact encryption and email retry behavior. The browser suite covers combined filters, empty states, sorting, persistence, modal deep links, form validation, private email exclusion, unsafe text rendering, fetch retry, and desktop/mobile layouts. On macOS it uses installed Chrome. Elsewhere, install Playwright Chromium and omit `executablePath` in `playwright.config.js`.
+The tests cover catalog approval, taxonomy and repository import, search matching, photo captions, private contact encryption and email retry behavior. The browser suite covers combined filters, empty states, sorting, persistence, submission deep links, collapsible forms, form validation, private email exclusion, unsafe text rendering, fetch retry, and desktop/mobile layouts. On macOS it uses installed Chrome. Elsewhere, install Playwright Chromium and omit `executablePath` in `playwright.config.js`.
 
 ## Submission and AE approval
 

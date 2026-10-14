@@ -10,6 +10,7 @@ const mockApproved=page=>page.route('**/data/projects.json',route=>route.fulfill
 test('L2 project modal preserves drafts and clears back to activity defaults',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/l2.html');
+ await expect(page.locator('#project-submission')).toHaveCount(0);
  await expect(page.getByRole('heading',{name:'Build with Wio Tracker L2 Pro'})).toBeVisible();
  await expect(page.locator('[data-purchase]').first()).toBeDisabled();
  await page.locator('[data-open-project]').first().click();await expect(page.locator('#l2-submit-dialog')).toBeVisible();
@@ -115,9 +116,12 @@ test('L2 responsive layout and reduced motion',async({page})=>{
  }
 });
 
-test('Hub links to activity and repository import keeps user edits',async({page})=>{
+test('Hub activity link expands the inline submission and repository import keeps user edits',async({page})=>{
  await page.goto('/#projects');await expect(page.locator('#home .campaign-banner a[href="./l2.html"]')).toHaveCount(1);
- await page.goto('/?activity=l2-pro#submit');await expect(page.locator('#related-activity')).toHaveValue('l2-pro');
+ await page.goto('/?activity=l2-pro#submit');
+ await expect(page.locator('section#submit > details#project-submission')).toHaveAttribute('open','');
+ await expect(page.locator('#submit #project-form')).toBeVisible();await expect(page.locator('#submit-dialog')).toHaveCount(0);
+ await expect(page.locator('#related-activity')).toHaveValue('l2-pro');
  await page.route('https://api.github.com/repos/example/build',route=>route.fulfill({json:{name:'Repo build',description:'A useful imported project description for L2 Pro.',owner:{login:'example'},license:{spdx_id:'MIT'}}}));
  await page.route('https://api.github.com/repos/example/build/readme',route=>route.fulfill({body:'# Repo build\n\n![Photo](https://example.com/photo.jpg)\n\n## Installation\n\n1. Flash the firmware.\n2. Pair the Wio Tracker L2 Pro.\n'}));
  await page.locator('[name=title]').fill('My edited title');await page.locator('#repository-url').fill('https://github.com/example/build');await page.locator('#import-repo').click();
