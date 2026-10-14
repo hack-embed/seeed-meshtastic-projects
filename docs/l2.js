@@ -113,6 +113,11 @@ async function loadProjectCatalog() {
   }
 }
 loadProjectCatalog();
+// Repeat the device wall on both sides of the visible group for a continuous loop.
+const hero=document.querySelector('.l2-hero'),wallTrack=hero.querySelector('.wall-track'),wallGroup=wallTrack.querySelector('.wall-group');
+wallTrack.append(wallGroup.cloneNode(true),wallGroup.cloneNode(true));
+wallTrack.classList.add('is-loop-ready');
+new IntersectionObserver(([entry])=>hero.classList.toggle('motion-idle',!entry.isIntersecting)).observe(hero);
 // A viewport-sized network stays visible throughout the page without a full-page bitmap.
 const canvas=$('mesh-background'),ctx=canvas.getContext('2d'),reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let width=0,height=0,points=[],frame=0,last=0,phase=0,paused=false;

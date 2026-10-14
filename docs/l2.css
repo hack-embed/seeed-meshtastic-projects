@@ -25,12 +25,15 @@
 .l2-page .menu-toggle { display: none; border: 1px solid #ffffff33; background: none; border-radius: 999px; padding: 8px 14px; font-weight: 600; color: white; }
 
 /* Hero */
-.l2-hero { position: relative; overflow: hidden; min-height: min(760px, calc(100svh - 68px)); display: flex; align-items: center; isolation: isolate; }
-.hero-wall { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
-.wall-grid { position: absolute; left: -12%; top: -45%; width: 144%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px 38px; transform: rotate(23deg); transform-origin: 55% 30%; animation: wall-drift 70s ease-in-out infinite alternate; }
-.wall-grid img { width: 100%; height: auto; opacity: .8; filter: drop-shadow(0 16px 20px #000b); }
-.wall-grid img:nth-child(even) { translate: 0 60px; }
-@keyframes wall-drift { from { translate: 2% -2%; } to { translate: -3% 5%; } }
+.l2-hero { position: relative; overflow: clip; min-height: min(760px, calc(100svh - 68px)); display: flex; align-items: center; isolation: isolate; }
+.hero-wall { position: absolute; inset: 0; z-index: -2; overflow: clip; }
+.wall-grid { --wall-size: 200px; --wall-gap: 28px; position: absolute; right: -40px; top: -40px; width: calc(var(--wall-size) * 6 + var(--wall-gap) * 5); transform: rotate(14deg); transform-origin: 50% 0; }
+.wall-track { display: flex; flex-direction: column; width: 100%; }
+.wall-track.is-loop-ready { transform: translateY(calc(-100% / 3)); animation: wall-scroll 30s linear infinite; }
+.wall-group { display: grid; flex-shrink: 0; grid-template-columns: repeat(6, var(--wall-size)); gap: var(--wall-gap); padding-bottom: var(--wall-gap); }
+.wall-group img { display: block; width: 100%; height: auto; opacity: .8; filter: drop-shadow(0 12px 16px #000b); }
+.l2-hero.motion-idle .wall-track { animation-play-state: paused; }
+@keyframes wall-scroll { from { transform: translateY(calc(-100% / 3)); } to { transform: translateY(calc(-200% / 3)); } }
 .l2-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #050a0b96 0%, #050a0bc9 35%, #050a0b5c 61%, #050a0b18 100%), linear-gradient(0deg, #050a0b 0%, transparent 25%, transparent 88%, #050a0b33 100%); pointer-events: none; }
 .hero-content { position: relative; padding-block: 96px; }
 .hero-copy { max-width: 730px; }
@@ -157,8 +160,9 @@
   .l2-page .brand .sensecap-logo { width: 96px; }
   .l2-hero { min-height: 0; align-items: flex-start; padding-bottom: 310px; }
   .l2-hero::before { background: linear-gradient(180deg, #050a0be6 0%, #050a0bbd 40%, #050a0b33 66%, #050a0b 100%); }
-  .wall-grid { left: -35%; top: 17%; width: 185%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 24px; }
-  .wall-grid img:nth-child(even) { translate: 0 20px; }
+  .wall-grid { --wall-size: 145px; --wall-gap: 22px; right: -60px; top: 220px; width: calc(var(--wall-size) * 3 + var(--wall-gap) * 2); }
+  .wall-group { grid-template-columns: repeat(3, var(--wall-size)); }
+  .wall-track.is-loop-ready { animation-duration: 42s; }
   .hero-content { padding-block: 44px 0; }
   .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .hero-actions .button { padding: 0 10px; font-size: 15px; min-height: 52px; white-space: normal; text-align: center; }
