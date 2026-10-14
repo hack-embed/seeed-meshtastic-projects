@@ -2,6 +2,7 @@
 export function initHubMotion() {
   const screens = [...document.querySelectorAll('[data-demo]')].map(canvas => ({canvas, ctx: canvas.getContext('2d')}));
   const button = document.getElementById('hub-motion');
+  const banner = document.querySelector('.campaign-banner');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = false, visible = true, frame = 0, last = 0, tick = 0;
   function draw({canvas, ctx: c}, time) {
@@ -53,6 +54,7 @@ export function initHubMotion() {
     cancelAnimationFrame(frame);frame=0;
     const stopped=paused||reduce.matches||document.hidden;
     document.body.classList.toggle('motion-paused',stopped);
+    banner.classList.toggle('motion-idle', stopped || !visible);
     button.disabled=reduce.matches;button.setAttribute('aria-pressed',String(paused||reduce.matches));
     button.textContent=reduce.matches?'Reduced motion':paused?'Resume motion ▷':'Pause motion Ⅱ';
     if(!stopped&&visible){last=performance.now();frame=requestAnimationFrame(animate);}
@@ -60,6 +62,6 @@ export function initHubMotion() {
   screens.forEach((s,i)=>draw(s,i*1.8));
   button.addEventListener('click',()=>{paused=!paused;sync();});
   reduce.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);
-  new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;sync();}).observe(document.querySelector('.campaign-banner'));
+  new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;sync();}).observe(banner);
   sync();
 }
