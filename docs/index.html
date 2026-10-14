@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./hub.css">
   <link rel="stylesheet" href="./forms.css">
   <script type="module" src="./app.js"></script>
+  <script type="module" src="./featured-waves.js"></script>
 </head>
 <body>
   <div class="hub-grid" aria-hidden="true"></div>
@@ -76,7 +77,7 @@
       <div class="shell">
         <h2 id="activities-title">Community Activities</h2>
         <p class="slogan">Build, share, and get inspired by the Seeed community.</p>
-        <article class="featured-activity">
+        <article class="featured-activity" id="featured-activity">
           <div class="featured-copy">
             <p class="featured-label">Featured Activity</p>
             <h3>Build with<br>Wio Tracker <span class="green">L2 Pro</span></h3>
@@ -89,6 +90,7 @@
             <img class="featured-shot shot-a" src="./assets/l2-screens/tile/02-gps.webp" alt="" width="480" height="694" loading="lazy">
             <img class="featured-shot shot-b" src="./assets/l2-screens/tile/03-block-stack.webp" alt="" width="480" height="751" loading="lazy">
           </a>
+          <button class="featured-motion" id="featured-motion" type="button" aria-pressed="false">Pause motion Ⅱ</button>
         </article>
         <h3 class="past-title">Past Activities</h3>
         <ul class="past-list">
