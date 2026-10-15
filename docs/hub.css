@@ -113,6 +113,7 @@ body > main, .site-footer { position: relative; z-index: 1; }
 .featured-activity { position: relative; isolation: isolate; contain: paint; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; margin-top: 36px; padding: 40px; border-radius: 20px; background: linear-gradient(90deg, #031f25 0%, #053f49 100%); border: 1px solid #ffffff26; color: #fff; }
 .featured-copy, .featured-media { position: relative; z-index: 1; }
 .featured-waves { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+.campaign-banner > .featured-waves { mask-image: linear-gradient(90deg, #000 35%, #0009 62%, transparent 92%); }
 .featured-activity.featured-paused .featured-shot { animation-play-state: paused; }
 .featured-motion { position: absolute; right: 16px; bottom: 12px; z-index: 2; border: 1px solid #ffffff30; border-radius: 99px; padding: 6px 10px; background: #031f2580; color: #c7dada; font-size: 11px; }
 .featured-label { font-size: 12px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: #b4dd63; margin-bottom: 14px; }
@@ -200,6 +201,7 @@ body > main, .site-footer { position: relative; z-index: 1; }
   .banner-devices { --demo-size: 130px; --demo-gap: 22px; top: 230px; right: -46px; transform: rotate(-12deg); }
   .banner-track.is-loop-ready { animation-duration: 40s; }
   .campaign-banner::after { background: linear-gradient(180deg,#071613 0%,#071613ef 32%,#07161366 66%,#07161311 100%); }
+  .campaign-banner > .featured-waves { mask-image: linear-gradient(180deg, #000 32%, #0008 65%, transparent 94%); }
   .contribute-callout { align-items: flex-start; flex-direction: column; }
   .section-head { flex-direction: column; align-items: stretch; }
   .search { width: 100%; }

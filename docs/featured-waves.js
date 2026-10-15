@@ -1,14 +1,15 @@
-// The reference community waves, drawn into one bounded surface instead of
-// animating the paint and opacity of dozens of oversized SVG elements.
-const card = document.getElementById('featured-activity');
-if (card) {
+// Both activity banners share the reference waves. Each uses one bounded
+// surface and only animates while visible.
+for (const card of document.querySelectorAll('.campaign-banner, .featured-activity')) {
+  const overlay = card.classList.contains('campaign-banner');
   const canvas = document.createElement('canvas');
   canvas.className = 'featured-waves';
   canvas.setAttribute('aria-hidden', 'true');
-  const context = canvas.getContext('2d', { alpha: false });
-  const button = document.getElementById('featured-motion');
+  const context = canvas.getContext('2d', { alpha: overlay });
+  // The top banner already has a page-wide motion control in hub-motion.js.
+  const button = card.querySelector('.featured-motion');
   if (context) initWaves();
-  else button.hidden = true;
+  else if (button) button.hidden = true;
 
   function initWaves() {
     const colors = ['#ffffff', '#8fc31f', '#00a651'];
@@ -50,8 +51,11 @@ if (card) {
     function draw() {
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.globalAlpha = 1;
-      context.fillStyle = background;
-      context.fillRect(0, 0, canvas.width, canvas.height);
+      if (overlay) context.clearRect(0, 0, canvas.width, canvas.height);
+      else {
+        context.fillStyle = background;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
       context.setTransform(canvas.width / 696, 0, 0, canvas.height / 316, 0, 0);
       for (const line of lines) {
         context.strokeStyle = line.color;
@@ -69,9 +73,11 @@ if (card) {
       const ratio = Math.min(devicePixelRatio || 1, 1.5, 1600 / width, 1000 / height);
       canvas.width = Math.max(1, Math.round(width * ratio));
       canvas.height = Math.max(1, Math.round(height * ratio));
-      background = context.createLinearGradient(0, 0, canvas.width, 0);
-      background.addColorStop(0, '#031f25');
-      background.addColorStop(1, '#053f49');
+      if (!overlay) {
+        background = context.createLinearGradient(0, 0, canvas.width, 0);
+        background.addColorStop(0, '#031f25');
+        background.addColorStop(1, '#053f49');
+      }
       draw();
     }
     function animate(now) {
@@ -89,16 +95,18 @@ if (card) {
       const pagePaused = document.body.classList.contains('motion-paused');
       const stopped = paused || reduce.matches || pagePaused;
       card.classList.toggle('featured-paused', stopped || document.hidden || !visible);
-      button.disabled = reduce.matches || pagePaused;
-      button.setAttribute('aria-pressed', String(stopped));
-      button.textContent = reduce.matches ? 'Reduced motion' : pagePaused ? 'Motion paused' : paused ? 'Resume motion ▷' : 'Pause motion Ⅱ';
-      button.title = pagePaused && !reduce.matches ? 'Resume page motion using the control in the top banner.' : '';
+      if (button) {
+        button.disabled = reduce.matches || pagePaused;
+        button.setAttribute('aria-pressed', String(stopped));
+        button.textContent = reduce.matches ? 'Reduced motion' : pagePaused ? 'Motion paused' : paused ? 'Resume motion ▷' : 'Pause motion Ⅱ';
+        button.title = pagePaused && !reduce.matches ? 'Resume page motion using the control in the top banner.' : '';
+      }
       if (!stopped && !document.hidden && visible) {
         last = performance.now();
         frame = requestAnimationFrame(animate);
       }
     }
-    button.addEventListener('click', () => { paused = !paused; sync(); });
+    button?.addEventListener('click', () => { paused = !paused; sync(); });
     reduce.addEventListener('change', sync);
     document.addEventListener('visibilitychange', sync);
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
