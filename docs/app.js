@@ -1,6 +1,6 @@
 import { initHubMotion } from './hub-motion.js';
 import { matchesProject } from './search.js';
-import { mountProjectForm } from './project-form.js';
+import { mountProjectForm } from './project-form.js?v=20261015-email';
 import { CATEGORIES, PRODUCTS, ACTIVITIES, REPO_URL } from './config.js';
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -135,7 +135,8 @@ function openSubmission(scroll) {
   void loadSubmissionForm();
   if (scroll) $('submit').scrollIntoView({block: 'start'});
 }
-for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', () => {
+for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', event => {
+  event.preventDefault();
   if (location.hash !== '#submit') {
     const url = new URL(location.href); url.hash = 'submit';
     history.pushState(null, '', url);

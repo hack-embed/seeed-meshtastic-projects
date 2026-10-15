@@ -16,6 +16,7 @@ test('L2 project modal preserves drafts and clears back to activity defaults',as
  await expect(page.getByRole('link',{name:'Get your L2',exact:true})).toHaveAttribute('href','https://www.seeedstudio.com/Wio-Tracker-L2-Pro-for-Meshtastic-p-0000.html');
  await expect(page.locator('[data-purchase-note]:visible')).toHaveCount(0);
  await page.locator('[data-open-project]').first().click();await expect(page.locator('#l2-submit-dialog')).toBeVisible();
+ await expect(page.locator('#project-form [name=email]')).toHaveAttribute('required','');
  await expect(page.locator('[name=hardware][value="Wio Tracker L2 Pro"]')).toBeChecked();
  await expect(page.locator('#related-activity')).toHaveValue('l2-pro');await expect(page.locator('#social-field')).toBeVisible();
  await page.locator('[name=title]').fill('Keep my draft');await page.keyboard.press('Escape');
@@ -43,7 +44,7 @@ test('local photo selection includes a caption and an explicit GitHub attachment
  await expect(page.locator('#photo-preview')).toBeVisible();await expect(page.locator('#photo-status')).toContainText('Attach it on GitHub');
  await page.locator('[name="image-description"]').fill('My working L2 Pro with its screen switched on.');
  await page.locator('[name=categories][value="Hardware"]').check();
- await page.locator('[name=resources]').fill('https://example.com/project');await page.locator('[name=consent]').check();
+ await page.locator('[name=resources]').fill('https://example.com/project');await page.locator('[name=email]').fill('private@example.com');await page.locator('[name=consent]').check();
  await page.locator('#prepare-project').click();await expect(page.locator('#submission-ready')).toBeVisible();
  await expect(page.locator('#photo-handoff')).toContainText('still needs to be uploaded');
  await expect(page.getByRole('button',{name:'Copy photo',exact:true})).toBeVisible();

@@ -143,7 +143,7 @@ export async function mountProjectForm({activity = ''} = {}) {
       $('submission-ready').hidden=false;$('form-error').hidden=true;
       $('submission-ready').scrollIntoView({block:'center',behavior:'smooth'});$('github-submit').focus({preventScroll:true});
     } catch {
-      if(request===submissionRequest)formError('Your private email could not be secured. Please try again. You can also remove it and send your contact details privately after submitting.');
+      if(request===submissionRequest)formError('Your private email could not be secured. Please try again, or contact sensecap@seeed.cc for help.');
     } finally {$('prepare-project').disabled=false;}
   });
   $('copy-submission').addEventListener('click',async()=>{

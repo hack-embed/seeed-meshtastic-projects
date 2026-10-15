@@ -10,7 +10,7 @@ An English-language community project collection for Seeed Mesh hardware. The we
 python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
 ```
 
-Open http://127.0.0.1:8765/. Home, Projects, Community Activities, the submission form, and Contact Us are sections of one page. The submission form sits below Community Activities and starts collapsed. Contribute a project expands and scrolls to it; collapsing the form preserves the draft. It is not a navigation item. Existing `#projects` links and `?project=ID#projects` project links remain valid, and `#submit` links expand the same form. Learn More links directly to Seeed’s Mesh product page.
+Open http://127.0.0.1:8765/. Home, Projects, Community Activities, the submission form, and Contact Us are sections of one page. The submission form sits below Community Activities and starts collapsed. The Submit a Project navigation link and Contribute a project buttons expand and scroll to it; collapsing the form preserves the draft. Existing `#projects` links and `?project=ID#projects` project links remain valid, and `#submit` links expand the same form. Learn More links directly to Seeed’s Mesh product page.
 
 Social Media Links is a separate optional field directly below Resources & Links. It accepts public posts and demo videos for any project, whether or not an activity is selected. Approved links appear on the project's card; the separate L2 marketing export still includes only L2 activity submissions.
 
@@ -40,7 +40,7 @@ The shared project form has a Clear form button. Clearing an L2 submission resto
 
 ### Email privacy and setup
 
-Project email is optional; social reward contact email is required. With approval email configured, the browser encrypts the address using the public key in `docs/notification-config.js`. Only ciphertext goes into the public issue. Actions decrypts it using a private key secret and sends through Resend; the address never enters the catalog or browser storage. Successful deliveries are recorded without recipient data so reruns do not send duplicate approval emails.
+Email is required in the website's project submission forms and social reward form. With approval email configured, the browser encrypts the address using the public key in `docs/notification-config.js`. Only ciphertext goes into the public issue. Actions decrypts it using a private key secret and sends through Resend; the address never enters the catalog or browser storage. Successful deliveries are recorded without recipient data so reruns do not send duplicate approval emails.
 
 **Email delivery is disabled until the team configures it.** Required settings are a verified Resend sender, `RESEND_API_KEY` and `APPROVAL_EMAIL_PRIVATE_KEY` Actions secrets, `APPROVAL_EMAIL_FROM` and `MESH_LAB_SITE_URL` variables, and the matching public key with `enabled: true`. Until then, the form offers a private `mailto:sensecap@seeed.cc` handoff; it cannot automatically email a contact that exists only in that manual message. See [APPROVAL_EMAIL_SETUP.md](APPROVAL_EMAIL_SETUP.md) for activation, retries, failure reconciliation, and safe local access to encrypted social reward contacts.
 

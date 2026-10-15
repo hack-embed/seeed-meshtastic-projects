@@ -25,7 +25,16 @@ test('submission validates selections, hides email, and keeps media links for ev
   await page.locator('[name=title]').fill('Test build'); await page.locator('[name=author]').fill('Maker');
   await page.locator('textarea[name=description]').fill('This is a community test build using a Seeed radio and a printed enclosure.');
   await page.locator('[name=image]').fill('https://example.com/image.jpg'); await page.locator('[name=resources]').fill('https://example.com/build');
-  await page.locator('[name=email]').fill('private@example.com'); await page.locator('[name=consent]').check();
+  await page.locator('[name=consent]').check();
+  await page.getByRole('button',{name:'Continue with GitHub'}).click();
+  await expect(page.locator('[name=email]')).toBeFocused();
+  expect(await page.locator('[name=email]').evaluate(input=>input.validity.valueMissing)).toBe(true);
+  await expect(page.locator('#submission-ready')).toBeHidden();
+  await page.locator('[name=email]').fill('not-an-email');
+  await page.getByRole('button',{name:'Continue with GitHub'}).click();
+  expect(await page.locator('[name=email]').evaluate(input=>input.validity.typeMismatch)).toBe(true);
+  await expect(page.locator('#submission-ready')).toBeHidden();
+  await page.locator('[name=email]').fill('private@example.com');
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#form-error')).toContainText('Select at least');
   await page.getByRole('checkbox',{name:'Wio Tracker L1 Pro',exact:true}).check(); await page.getByRole('checkbox',{name:'Hardware',exact:true}).check();
   await expect(page.locator('#social-field')).toBeVisible();
@@ -61,7 +70,14 @@ test('desktop and mobile pages remain English and fit the viewport',async({page}
       expect(metrics.scroll,`${route} at ${width}px`).toBeLessThanOrEqual(metrics.width); expect(metrics.text).not.toMatch(/[\u3400-\u9fff]/);
       await page.screenshot({path:`test-results/${route}-${width}.png`,fullPage:true});
     }
-    if(width===390){await page.locator('#menu-toggle').click();await expect(page.locator('#main-nav')).toBeVisible();await page.locator('#main-nav a[href="#projects"]').click();await expect(page.locator('#main-nav')).toBeHidden();}
+    if(width===390){
+      for(let visit=0;visit<2;visit++) {
+        await page.locator('#menu-toggle').click();await expect(page.locator('#main-nav')).toBeVisible();
+        await page.locator('#main-nav a[href="#submit"]').click();await expect(page.locator('#main-nav')).toBeHidden();
+        await expect(page.locator('#project-submission')).toHaveAttribute('open','');
+        await page.locator('#project-submission > summary').click();
+      }
+    }
   }
   expect(errors).toEqual([]);
 });
@@ -70,7 +86,7 @@ test('Hub submission is a collapsed section between Community Activities and Con
   await page.goto('/');
   await expect(page.locator('.project-card')).toHaveCount(15);
   await expect(page.locator('#submit-dialog')).toHaveCount(0);
-  await expect(page.locator('#main-nav a[href="#submit"]')).toHaveCount(0);
+  await expect(page.locator('#main-nav a[href="#submit"]')).toHaveText('Submit a Project');
   await expect(page.locator('section#submit > details#project-submission')).toHaveCount(1);
   await expect(page.locator('#project-submission')).not.toHaveAttribute('open');
   await expect(page.locator('#project-submission > summary')).toBeVisible();
@@ -85,7 +101,7 @@ test('Hub submission is a collapsed section between Community Activities and Con
 test('Hub contribution buttons expand and scroll to the form, and collapsing keeps its draft', async ({page}) => {
   await page.goto('/#projects');
   const disclosure=page.locator('#project-submission'), summary=page.locator('#project-submission > summary');
-  // Exercise each homepage entry point; both must use the same inline form.
+  // Exercise every homepage entry point, including the navigation link.
   const buttons=page.locator('[data-open-project]');
   expect(await buttons.count()).toBeGreaterThan(0);
   for(let index=0;index<await buttons.count();index++) {
