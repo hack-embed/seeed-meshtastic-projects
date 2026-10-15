@@ -40,7 +40,7 @@ The shared project form has a Clear form button. Clearing an L2 submission resto
 
 ### Email privacy and setup
 
-Email is required in the website's project submission forms and social reward form. With approval email configured, the browser encrypts the address using the public key in `docs/notification-config.js`. Only ciphertext goes into the public issue. Actions decrypts it using a private key secret and sends through Resend; the address never enters the catalog or browser storage. Successful deliveries are recorded without recipient data so reruns do not send duplicate approval emails.
+Email is optional in the website's project submission forms and required in the social reward form. With approval email configured, the browser encrypts the address using the public key in `docs/notification-config.js`. Only ciphertext goes into the public issue. Actions decrypts it using a private key secret and sends through Resend; the address never enters the catalog or browser storage. Successful deliveries are recorded without recipient data so reruns do not send duplicate approval emails.
 
 **Email delivery is disabled until the team configures it.** Required settings are a verified Resend sender, `RESEND_API_KEY` and `APPROVAL_EMAIL_PRIVATE_KEY` Actions secrets, `APPROVAL_EMAIL_FROM` and `MESH_LAB_SITE_URL` variables, and the matching public key with `enabled: true`. Until then, the form offers a private `mailto:sensecap@seeed.cc` handoff; it cannot automatically email a contact that exists only in that manual message. See [APPROVAL_EMAIL_SETUP.md](APPROVAL_EMAIL_SETUP.md) for activation, retries, failure reconciliation, and safe local access to encrypted social reward contacts.
 

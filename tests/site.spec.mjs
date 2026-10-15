@@ -26,15 +26,12 @@ test('submission validates selections, hides email, and keeps media links for ev
   await page.locator('textarea[name=description]').fill('This is a community test build using a Seeed radio and a printed enclosure.');
   await page.locator('[name=image]').fill('https://example.com/image.jpg'); await page.locator('[name=resources]').fill('https://example.com/build');
   await page.locator('[name=consent]').check();
-  await page.getByRole('button',{name:'Continue with GitHub'}).click();
-  await expect(page.locator('[name=email]')).toBeFocused();
-  expect(await page.locator('[name=email]').evaluate(input=>input.validity.valueMissing)).toBe(true);
-  await expect(page.locator('#submission-ready')).toBeHidden();
+  await expect(page.locator('[name=email]')).not.toHaveAttribute('required');
   await page.locator('[name=email]').fill('not-an-email');
   await page.getByRole('button',{name:'Continue with GitHub'}).click();
   expect(await page.locator('[name=email]').evaluate(input=>input.validity.typeMismatch)).toBe(true);
   await expect(page.locator('#submission-ready')).toBeHidden();
-  await page.locator('[name=email]').fill('private@example.com');
+  await page.locator('[name=email]').fill('');
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#form-error')).toContainText('Select at least');
   await page.getByRole('checkbox',{name:'Wio Tracker L1 Pro',exact:true}).check(); await page.getByRole('checkbox',{name:'Hardware',exact:true}).check();
   await expect(page.locator('#social-field')).toBeVisible();
@@ -42,6 +39,9 @@ test('submission validates selections, hides email, and keeps media links for ev
   await page.locator('[name=social]').fill('http://example.com/social');
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#form-error')).toContainText('valid HTTPS URL');
   await page.locator('[name=social]').fill('https://example.com/social');
+  await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#submission-ready')).toBeVisible();
+  await expect(page.locator('#private-email')).toBeHidden();
+  await page.locator('[name=email]').fill('private@example.com');
   await page.getByRole('button',{name:'Continue with GitHub'}).click(); await expect(page.locator('#submission-ready')).toBeVisible();
   let href=await page.locator('#github-submit').getAttribute('href'); let body=new URL(href).searchParams.get('body');
   expect(body).toContain('https://example.com/social'); expect(body).not.toContain('private@example.com');
