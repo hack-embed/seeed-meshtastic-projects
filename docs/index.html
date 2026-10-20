@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./base.css">
   <link rel="stylesheet" href="./hub.css?v=20261015-waves">
   <link rel="stylesheet" href="./forms.css">
-  <script type="module" src="./app.js?v=20261015-submit"></script>
+  <script type="module" src="./app.js?v=20261020-submit-open"></script>
   <script type="module" src="./featured-waves.js?v=20261015-home"></script>
 </head>
 <body>
@@ -126,6 +126,19 @@
   <footer class="site-footer"><div class="shell footer-inner"><img src="./assets/seeed-logo.png" alt="Seeed Studio" width="118" height="13"><p>LoRa Mesh Lab. Projects and images belong to their creators.</p></div></footer>
   <dialog id="detail" aria-labelledby="detail-title"><button class="dialog-close" data-close aria-label="Close project details">×</button><div id="detail-content"></div></dialog>
   <div id="toast" role="status" class="toast" hidden></div>
+  <script>
+    // Reveal the form before native anchor scrolling, even while app modules load.
+    {
+      const submission = document.getElementById('project-submission');
+      for (const link of document.querySelectorAll('a[href="#submit"]')) {
+        link.addEventListener('click', event => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          submission.open = true;
+        });
+      }
+      if (location.hash === '#submit') submission.open = true;
+    }
+  </script>
   <noscript><div class="noscript">Enable JavaScript to browse LoRa Mesh Lab. You can also <a href="./data/projects.json">view the project catalog</a> or <a href="https://github.com/hack-embed/seeed-meshtastic-projects/issues/new?template=project.yml">submit a project on GitHub</a>.</div></noscript>
 </body>
 </html>

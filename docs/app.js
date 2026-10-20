@@ -136,6 +136,7 @@ function openSubmission(scroll) {
   if (scroll) $('submit').scrollIntoView({block: 'start'});
 }
 for (const button of document.querySelectorAll('[data-open-project]')) button.addEventListener('click', event => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   if (location.hash !== '#submit') {
     const url = new URL(location.href); url.hash = 'submit';
@@ -237,7 +238,7 @@ for (const event of ['pointerdown', 'wheel', 'touchstart', 'keydown']) {
   window.addEventListener(event, () => { visitorInteracted = true; }, {passive: true, signal: initialNavigation.signal});
 }
 route(false); render();
-if (initialHash === '#submit') openSubmission(false);
+if (initialHash === '#submit' || $('project-submission').open) openSubmission(false);
 initHubMotion();
 loadProjects().then(() => {
   if (!visitorInteracted && location.hash === initialHash && sectionIds.includes(initialHash.slice(1)) && !$('detail').open) {
